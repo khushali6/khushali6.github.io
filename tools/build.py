@@ -1,30 +1,21 @@
 #!/usr/bin/env python3
-"""Generates the static site (index + case-study pages). Run: python3 tools/build.py"""
+"""Generates the static site. Run: python3 tools/build.py"""
 import os, html
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://khushali6.github.io"
 EMAIL, GH, LI = "khushalipariyal@gmail.com", "https://github.com/khushali6", "https://linkedin.com/in/khushalipariyal"
-ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
-GHI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S8.93 17.38 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>'
-LIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>'
-MAIL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>'
-EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>'
-ICONS = {
- "agents": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4M9 14h.01M15 14h.01M2 14h2M20 14h2"/></svg>',
- "rag": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8 11h6M11 8v6"/></svg>',
- "vision": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
- "product": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14.7 6.3 3 3L7 20H4v-3zM15 5l1.3-1.3a2.1 2.1 0 0 1 3 3L18 8"/></svg>',
-}
 
 def e(s): return html.escape(s, quote=True)
+def tags(ts): return '<p class="tags">%s</p>' % ''.join('<span>%s</span>' % e(t) for t in ts)
 def flow(steps, cls=""):
     return '<ol class="flow %s" aria-label="Workflow">%s</ol>' % (cls, '<li class="arr" aria-hidden="true"></li>'.join('<li>%s</li>' % e(s) for s in steps))
-def tags(ts): return '<div class="tags">%s</div>' % ''.join('<span class="tag">%s</span>' % e(t) for t in ts)
 
-NAV = [("Work", "/#work"), ("Projects", "/#projects"), ("About", "/#about"), ("GitHub", "/#github"), ("Contact", "/#contact")]
+NAV = [("Work", "/#work"), ("Experience", "/#experience"), ("Stack", "/#stack"), ("About", "/#about"), ("Workbench", "/workbench/"), ("Contact", "/#contact")]
+THEME_DOTS = [("paper", "#f6f4ee"), ("night", "#141413"), ("nord", "#5e81ac"), ("gruvbox", "#b8bb26")]
 
-def page(title, desc, path, body, og_title=None, cur=None):
-    nav = ''.join('<li><a class="lnk" href="%s"%s>%s</a></li>' % (h, ' aria-current="page"' if cur == n else '', n) for n, h in NAV)
+def page(title, desc, path, body, cur=None, og=None):
+    nav = ''.join('<li><a href="%s"%s>%s</a></li>' % (h, ' aria-current="page"' if cur == n else '', n) for n, h in NAV)
+    dots = ''.join('<button data-t="%s" aria-label="%s theme" aria-pressed="false" style="background:%s"></button>' % (t, t, c) for t, c in THEME_DOTS)
     url = SITE + path
     return f'''<!doctype html>
 <html lang="en">
@@ -34,402 +25,320 @@ def page(title, desc, path, body, og_title=None, cur=None):
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{url}">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Khushali Pariyal">
-<meta property="og:title" content="{e(og_title or title)}">
-<meta property="og:description" content="{e(desc)}">
-<meta property="og:url" content="{url}">
-<meta property="og:image" content="{SITE}/assets/img/og.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Khushali Pariyal">
+<meta property="og:title" content="{e(og or title)}"><meta property="og:description" content="{e(desc)}">
+<meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/img/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#f6f2e9">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<script>try{{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}}catch(e){{}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
-<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"Khushali Pariyal","jobTitle":"AI Engineer","url":"{SITE}/","sameAs":["{GH}","{LI}"],"knowsAbout":["Agentic AI","RAG","Multimodal AI","Generative AI","LLMOps"]}}</script>
+<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"Khushali Pariyal","jobTitle":"AI Engineer","url":"{SITE}/","sameAs":["{GH}","{LI}"]}}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="nav"><div class="wrap">
-<a class="brand" href="/"><i></i>KHUSHALI</a>
-<button class="burger" aria-label="Menu" aria-expanded="false">Menu</button>
+<header class="nav"><div class="bar">
+<a class="brand" href="/">khushali pariyal</a>
 <nav aria-label="Primary"><ul>{nav}</ul></nav>
+<div class="themes" role="group" aria-label="Theme">{dots}</div>
+<button class="burger" aria-label="Menu" aria-expanded="false">menu</button>
 </div></header>
 <main id="main">
 {body}
 </main>
-<footer class="foot"><div class="wrap"><span>© 2026 Khushali Pariyal</span><span>Built by hand · projects pulled live from the GitHub API</span></div></footer>
 <script src="/assets/app.js" defer></script>
 </body>
 </html>
 '''
 
-def contact_block():
-    return f'''<section id="contact" style="padding-bottom:0"><div class="wrap"><div class="contact rv">
-<p class="eyebrow" style="color:#cfe6d6">10 — CONTACT</p>
-<h2 style="margin-top:18px">Have an interesting <em>AI problem?</em></h2>
-<p class="lead">I'm always interested in building things where the obvious solution isn't another chatbot.</p>
-<div class="btns"><a class="btn" href="mailto:{EMAIL}">{MAIL} Email me</a><a class="btn ghost" href="{GH}" target="_blank" rel="noopener">{GHI} GitHub</a><a class="btn ghost" href="{LI}" target="_blank" rel="noopener">{LIN} LinkedIn</a></div>
-<div class="who"><span><b>Khushali Pariyal</b></span><span>AI Engineer · Agentic AI · RAG · Multimodal AI</span><span>{EMAIL}</span></div>
-</div></div></section>'''
+def contact():
+    return f'''<section class="contact" id="contact"><div class="col">
+<h2>Have something <em>interesting</em> to build?</h2>
+<p>I'm always interested in problems where the obvious solution isn't another chatbot.</p>
+<div class="big"><a href="mailto:{EMAIL}"><span>Email</span><span>{EMAIL}</span></a><a href="{GH}" target="_blank" rel="noopener"><span>GitHub</span><span>khushali6 ↗</span></a><a href="{LI}" target="_blank" rel="noopener"><span>LinkedIn</span><span>khushalipariyal ↗</span></a></div>
+<p class="who">Khushali Pariyal<br>AI Engineer · Agentic AI · RAG · Multimodal AI</p>
+</div></section>'''
 
-# ------------------------------------------------------------------ INDEX
-PROJECTS = [
- dict(slug="meadow", name="MEADOW", label="AGENTIC CODING SYSTEM", head="Your coding environment, from your pocket.",
-      blurb="Meadow is a local-first agentic coding system that turns a request into a planned, tested and reviewable coding workflow.",
-      steps=["Plan","Build","Test","Review","Merge"], tags=["Agentic AI","MCP","Tool Calling","TypeScript","Human-in-the-loop","Harness Engineering"],
-      repo="Meadow", gh="https://github.com/khushali6/Meadow", live=None,
-      why="The interesting part isn't that an LLM writes code. It's what happens when the code it writes is wrong.", alt="Illustrative Meadow dashboard: phases, a failing test returned to the engine, and an approval gate"),
- dict(slug="casora", name="CASORA", label="AI DECISION INTELLIGENCE", head="Real estate research without the broker maze.",
-      blurb="Casora is an AI-powered real-estate research product for searching, comparing and understanding homes across India using verified information and locality-level intelligence.",
-      steps=["Ask","Search","Verify","Compare","Decide"], tags=["LLM","Semantic Search","Investment Analytics","Explainable AI","Full-Stack"],
-      repo=None, gh=None, live="https://casora-nine.vercel.app/",
-      why="Don't invent a number just because the model can.", alt="Illustrative Casora UI: natural-language search, linked listings and a decision panel"),
- dict(slug="splitmate", name="SPLITMATE", label="MULTIMODAL AI", head="Take a photo. Split the bill.",
-      blurb="An AI expense-sharing product that understands receipts and turns them into structured expenses and fair settlements.",
-      steps=["Receipt","AI","Structure","Math","Split"], tags=["OCR","VLM","Gemini API","Deterministic Engine","Debt Graph","Full-Stack"],
-      repo=None, gh=None, live="https://splitmate-two-iota.vercel.app/",
-      why="The LLM never does the math.", alt="Illustrative SplitMate UI: receipt, extracted items, math engine and minimum settlements"),
- dict(slug="laya", name="LAYA", label="CREATIVE AI EXPERIMENT", head="What happens when AI gets a meme brain?",
-      blurb="A playful AI experiment exploring character-driven content generation and creative AI workflows.",
-      steps=["Idea","AI","Meme"], tags=["LLM Workflows","Creative AI","Generative"],
-      repo=None, gh=None, live="https://layameme.vercel.app/",
-      why="Built because AI should be fun too.", alt="Illustrative Laya meme cards"),
+def shot(slug, alt, cap_name):
+    """Real screenshot if assets/shots/<slug>.jpg exists on the live site; otherwise a UI sketch."""
+    return f'''<figure class="shot"><img src="/assets/shots/{slug}.jpg" data-fallback="/assets/img/{slug}.svg" alt="{e(alt)}" width="1200" height="800" loading="lazy" onerror="this.onerror=null;this.src=this.dataset.fallback" onload="if(this.src.indexOf('/shots/')>-1)this.closest('figure').classList.add('live')"><figcaption><span class="c-sketch">UI sketch · {cap_name}</span><span class="c-live">Live product · {cap_name}</span></figcaption></figure>'''
+
+# ------------------------------------------------------------------ DATA
+P = {
+ "meadow": dict(name="Meadow", kicker="Agentic coding system", head="Your coding environment, from your pocket.",
+   line="A local-first agent that turns a request into finished, tested code by driving a coding engine phase by phase.",
+   stack=["Agentic AI","MCP","Tool calling","TypeScript","Human-in-the-loop"], repo="Meadow", gh="https://github.com/khushali6/Meadow", live=None,
+   steps=["Plan","Build","Test","Review","Merge"], alt="Meadow demo: a Telegram conversation that plans, builds and tests a habit-tracker app"),
+ "casora": dict(name="Casora", kicker="AI decision intelligence", head="Real estate research without the broker maze.",
+   line="Search, compare and understand homes across India — with the evidence shown, and “verify first” when it isn't there.",
+   stack=["LLM","Semantic search","Investment analytics","Full-stack"], repo=None, gh=None, live="https://casora-nine.vercel.app/",
+   steps=["Ask","Search","Verify","Compare","Decide"], alt="Casora: natural-language property search with a decision panel"),
+ "splitmate": dict(name="SplitMate", kicker="Multimodal AI", head="Take a photo. Split the bill.",
+   line="OCR + VLMs read the receipt. A deterministic engine does the math. The LLM never touches the numbers.",
+   stack=["OCR","VLM","Gemini API","Debt graph","Full-stack"], repo=None, gh=None, live="https://splitmate-two-iota.vercel.app/",
+   steps=["Receipt","AI","Structure","Math","Split"], alt="SplitMate: receipt, extracted items, math engine and settlements"),
+ "laya": dict(name="Laya", kicker="Creative AI experiment", head="What happens when AI gets a meme brain?",
+   line="A playful experiment in character-driven content generation. Built because AI should be fun too.",
+   stack=["LLM workflows","Creative AI"], repo=None, gh=None, live="https://layameme.vercel.app/",
+   steps=["Idea","AI","Meme"], alt="Laya meme cards"),
+}
+
+SYS = [
+ ("Requirements → software", "75% faster feature turnaround",
+  "An autonomous agentic system that turns stakeholder requirements into shipped software: architecture flow, code generation, automated review and deployment. Documents go through Textract OCR into an OpenSearch vector index, orchestrated event-driven with EventBridge and Lambda.",
+  ["AWS Bedrock","AgentCore","RAG","Textract","OpenSearch","EventBridge","Lambda"]),
+ ("ADAS test generation", "70% less manual test creation · 2× coverage",
+  "A GenAI RAG pipeline that generates ADAS test cases from NCAP specification documents: multimodal ingestion (text, tables, images), chunking, embeddings, FAISS retrieval, LLM inference, and agentic validation loops to cut hallucination.",
+  ["Multimodal RAG","FAISS","LLM","Validation loops"]),
+ ("AI code review", "80% less manual review effort",
+  "LLM-powered developer tooling for automated code review, static analysis, architectural validation and security vulnerability detection inside CI/CD, raising pre-merge defect detection.",
+  ["DeepSeek","CI/CD","Static analysis","Security"]),
+ ("Computer-vision inspection", "18–22% better precision/recall",
+  "Railway inspection models: DeepLabV3 for segmentation and PatchCore for anomaly detection across multi-camera pipelines processing 20K+ images per cycle. Stable Diffusion generated synthetic data for robustness under changing light and weather.",
+  ["DeepLabV3","PatchCore","Stable Diffusion","PyTorch"]),
 ]
 
-def feature(i, p):
-    links = f'<a class="btn" href="/{p["slug"]}/">Case study {ARROW}</a>'
-    if p["live"]: links += f'<a class="btn ghost" href="{p["live"]}" target="_blank" rel="noopener">Live demo {EXT}</a>'
-    if p["gh"]: links += f'<a class="btn ghost" href="{p["gh"]}" target="_blank" rel="noopener">{GHI} GitHub</a>'
-    meta = f'<div class="ghmeta" data-repo="{p["repo"]}" aria-label="GitHub stats"></div>' if p["repo"] else ''
-    return f'''<article class="feature rv">
-<div class="f-text">
-<p class="name">0{i} — {p["name"]}</p>
-<p class="label">{p["label"]}</p>
-<h3>{e(p["head"])}</h3>
-<p>{e(p["blurb"])}</p>
-<div class="fl">{flow(p["steps"])}</div>
-<p class="why">“{e(p["why"])}”</p>
-{tags(p["tags"])}
-{meta}
-<div class="btns" style="margin-top:26px">{links}</div>
-</div>
-<a href="/{p["slug"]}/" aria-label="{p["name"].title()} case study"><figure class="shot"><img src="/assets/img/{p["slug"]}.svg" alt="{e(p["alt"])}" width="1200" height="800" loading="lazy"><figcaption>ILLUSTRATIVE UI · {p["name"]}</figcaption></figure></a>
+WB = [
+ ("crop-raid-guard", "Night camera footage in, signed crop-loss evidence out.", "crop-raid-guard"),
+ ("Intentroute", "LangGraph + MCP agent that turns fuzzy requests (“I'm bloated”) into verified, structured orders.", "Intentroute"),
+ ("CoFoundry", "Startup discovery and hiring radar built on the TinyFish web-agent API.", "CoFoundry"),
+ ("NeuralCraft", "Landing-page experiments in React.", "NeuralCraft"),
+ ("Movie-Mania", "Movie recommender: content-based, collaborative and demographic filtering.", "Movie-Mania"),
+ ("DailyInsight", "Django app serving categorised news from the Inshorts API.", "DailyInsight"),
+ ("SignVerse", "Flutter app (SSIP project).", "SignVerse"),
+]
+
+LEARNED = [
+ ("SplitMate", "let the model read the receipt. Don't let it calculate the bill.", "/splitmate/"),
+ ("Meadow", "the interesting part of an agent is what happens after it fails.", "/meadow/"),
+ ("Casora", "if the data isn't there, “I don't know” is a feature.", "/casora/"),
+ ("TCS", "measure the system, not the demo: correctness, recovery, latency, cost.", "/#experience"),
+]
+
+# ------------------------------------------------------------------ HOME
+def home():
+    m = P["meadow"]
+    meadow = f'''<article class="feat">
+<figure class="player"><video data-auto muted loop playsinline preload="none" poster="/assets/media/meadow-3.jpg" aria-label="{e(m["alt"])}"><source src="/assets/media/meadow-demo.mp4" type="video/mp4"></video>
+<figcaption><span>Real product demo · from the Meadow README</span><span>Telegram → plan → build → test</span></figcaption></figure>
+<div class="t"><h3>Meadow</h3><span class="k">{m["kicker"].upper()} · BETA · MIT</span></div>
+<p class="d">{e(m["line"])} Each phase gets its own git branch and checks that can actually fail.</p>
+<p class="pull">The interesting part isn't that an LLM writes code. It's what happens when the code it writes is wrong.</p>
+{tags(m["stack"])}
+<p class="go"><a class="p" href="/meadow/">Read the build →</a><a href="{m["gh"]}" target="_blank" rel="noopener">GitHub ↗</a><span class="meta" data-repo="Meadow"></span></p>
 </article>'''
-
-PROD = [
- ("REQUIREMENTS → SOFTWARE", ["AWS Bedrock","AgentCore","RAG","Textract","OpenSearch","Lambda","EventBridge"],
-  "Built an agentic workflow that takes stakeholder requirements through retrieval, code generation, automated review and deployment.", [(75,"%","faster feature turnaround")]),
- ("ADAS TEST GENERATION", ["Multimodal RAG","FAISS","LLM","Validation Loops"],
-  "Generated ADAS test cases from NCAP specification documents containing text, tables and images, with agentic validation loops to reduce hallucination.", [(70,"%","less manual test creation"),(2,"×","test coverage")]),
- ("AI CODE REVIEW", ["LLM","CI/CD","Static Analysis","Security"],
-  "Developer tooling for automated code review, architectural validation and security vulnerability detection inside CI/CD pipelines.", [(80,"%","less manual review effort")]),
- ("COMPUTER VISION INSPECTION", ["DeepLabV3","PatchCore","Stable Diffusion","PyTorch"],
-  "Multi-camera inspection pipeline processing 20K+ images per cycle, using synthetic data to improve robustness under changing lighting and weather.", [(18,"–22%","precision/recall improvement")]),
-]
-def prod_cards(link=True):
-    out = []
-    for t, st, d, ms in PROD:
-        m = ''.join(f'<div class="metric"><div class="n"><span data-count="{n}" data-suffix="{s}">0{s}</span></div><div class="t">{e(l)}</div></div>' for n, s, l in ms)
-        out.append(f'<article class="card rv"><p class="sm">{t}</p>{tags(st)}<p style="margin-top:18px">{e(d)}</p><div class="metrics">{m}</div></article>')
-    return '\n'.join(out)
-
-PRINC = [
- ("01","Don't let the LLM do deterministic work.","If something can be solved reliably with code, I don't ask the model to guess.","SplitMate","/splitmate/"),
- ("02","Give agents tools, not superpowers.","Let the model make decisions, but don't let it invent the state of the world.","Meadow","/meadow/"),
- ("03","Retrieval is not memory.","Searchable knowledge, conversation state, durable facts and past events are different problems.","Agentic / RAG systems","/work/"),
- ("04","Measure the system, not the demo.","A good-looking answer isn't enough. I care about correctness, failure recovery, latency, cost and whether the system actually helps.","Production AI systems","/work/"),
-]
-STACK = [
- ("AI / AGENTS", ["Python","LangGraph","LangChain","MCP","Tool Calling","Multi-Agent Systems","Agent Harness Engineering","Human-in-the-loop"]),
- ("LLM / RAG", ["AWS Bedrock","OpenAI","Gemini","DeepSeek","Ollama","Embeddings","FAISS","OpenSearch","Vector Search","Semantic Search"]),
- ("BACKEND", ["FastAPI","Django","Node.js","REST APIs","PostgreSQL","MongoDB","Redis"]),
- ("CLOUD", ["AWS","Azure","Lambda","EventBridge","Textract","AgentCore","Docker"]),
- ("ML / VISION", ["PyTorch","YOLO","DeepLabV3","PatchCore","Stable Diffusion","OCR","VLM"]),
- ("LANGUAGES", ["Python","TypeScript","JavaScript","Java","SQL","C++","C"]),
-]
-
-def index():
-    wb = [("agents","AGENTS","Systems that plan, use tools, maintain state and recover from failures.",["MCP","Tool Calling","Multi-Agent","Human-in-the-loop","Agent Harnesses"]),
-          ("rag","RAG & INTELLIGENCE","Systems that retrieve evidence before they make decisions.",["Embeddings","Vector Search","Semantic Search","Hybrid Retrieval","Evaluation"]),
-          ("vision","MULTIMODAL AI","Systems that understand documents, images, receipts and real-world visual data.",["OCR","VLM","Computer Vision","Document Understanding"]),
-          ("product","AI PRODUCTS","I don't stop at the model. I build the product around it.",["APIs","Databases","Cloud","Frontend","Observability","Deployment"])]
-    wbh = ''.join(f'<article class="card rv"><div class="ico">{ICONS[i]}</div><h3 style="font-size:18px;font-family:var(--mono);letter-spacing:.1em">{t}</h3><p>{d}</p>{tags(ts)}</article>' for i, t, d, ts in wb)
-    feats = '\n'.join(feature(i + 1, p) for i, p in enumerate(PROJECTS))
-    princ = ''.join(f'<article class="card rv"><p class="num">{n}</p><h3>{e(h)}</h3><blockquote>“{e(q)}”</blockquote><p class="ref">Reference · <a href="{u}">{e(r)}</a></p></article>' for n, h, q, r, u in PRINC)
-    stack = ''.join(f'<div><h4>{h}</h4><p>{" ".join("<span>%s</span>" % e(x) for x in items)}</p></div>' for h, items in STACK)
+    def card(k):
+        p = P[k]
+        links = f'<a class="p" href="/{k}/">Read the build →</a><a href="{p["live"]}" target="_blank" rel="noopener">Live ↗</a>'
+        return f'''<article class="pcard">{shot(k, p["alt"], p["name"])}<h3>{p["name"]}</h3><p class="k">{p["kicker"].upper()}</p><p class="d">{e(p["line"])}</p>{tags(p["stack"])}<p class="go">{links}</p></article>'''
+    l = P["laya"]
+    laya = f'''<article class="row"><div><h3>Laya</h3><p class="k">{l["kicker"].upper()}</p></div><span class="chipmeme">idea → AI → meme</span><p>{e(l["line"])}</p><p class="go" style="margin:0"><a class="p" href="/laya/">Read the build →</a><a href="{l["live"]}" target="_blank" rel="noopener">Live ↗</a></p></article>'''
+    sys = ''.join(f'<details class="sys"><summary><b>{t}</b><span class="m">{m_}</span></summary><div class="in"><p>{e(d)}</p>{tags(st)}</div></details>' for t, m_, d, st in SYS)
+    learned = ''.join(f'<li><b>{a}</b>{e(b)} <a href="{u}">→</a></li>' for a, b, u in LEARNED)
+    wb = ''.join(f'<li><a href="https://github.com/khushali6/{r}" target="_blank" rel="noopener"><b>{n}</b><span>{e(d)}</span><em data-live="{r}"></em></a></li>' for n, d, r in WB[:5])
     body = f'''
-<section class="hero"><div class="wrap">
-<p class="eyebrow">AI ENGINEER · AGENTIC AI · RAG · MULTIMODAL AI</p>
+<div class="col hero">
+<p class="hello">Khushali Pariyal · AI engineer · Gandhinagar, India</p>
 <h1>I build AI systems that <em>actually do things.</em></h1>
-<p class="lead">AI Engineer building agentic systems, RAG pipelines, multimodal AI and AI products — from the first prototype to production.</p>
-<div class="btns"><a class="btn" href="#projects">View my work {ARROW}</a><a class="btn ghost" href="{GH}" target="_blank" rel="noopener">{GHI} GitHub</a><a class="btn ghost" href="{LI}" target="_blank" rel="noopener">{LIN} LinkedIn</a></div>
-<div class="proof">
-<div><p class="k">2+ YEARS</p><p class="v">Production AI</p><p class="s">Professional AI engineering</p></div>
-<div><p class="k">AGENTIC AI</p><p class="v">MCP · Tool Calling</p><p class="s">Multi-Agent</p></div>
-<div><p class="k">RAG</p><p class="v">Search · Retrieval</p><p class="s">Evaluation</p></div>
-<div><p class="k">AI PRODUCTS</p><p class="v">4+ Shipped Projects</p><p class="s">Idea to working software</p></div>
+<p class="intro">AI engineer. I build agents, RAG systems, multimodal tools and occasionally things I probably didn't need to build.</p>
+<p class="now">Right now: agents, AI products, and systems that turn messy information into useful decisions.</p>
+<p class="links"><a href="#work">Work ↓</a><a href="{GH}" target="_blank" rel="noopener">GitHub ↗</a><a href="{LI}" target="_blank" rel="noopener">LinkedIn ↗</a><a href="mailto:{EMAIL}">Email</a></p>
+<dl class="facts"><div><dt>Experience</dt><dd>2+ years of production AI at TCS</dd></div><div><dt>Shipped</dt><dd>4+ projects, idea to working software</dd></div><div><dt>Focus</dt><dd>Agents · RAG · multimodal · LLMOps</dd></div></dl>
 </div>
-<p class="now">Currently building agents, AI products, and systems that turn messy information into useful decisions.</p>
+
+<section id="work"><div class="wide">
+<h2 class="sh">Selected work</h2>
+<p class="lead">Four things I'm proud I actually finished.</p>
+{meadow}
+<div class="pair">{card("casora")}{card("splitmate")}</div>
+{laya}
 </div></section>
 
-<section id="what" style="border-top:1px solid var(--line)"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>02</b> — WHAT I BUILD</p><h2>I like building the <em>system around</em> the model.</h2></div>
-<div class="grid4">{wbh}</div>
+<section id="experience"><div class="col">
+<h2 class="sh">Experience</h2>
+<div class="job"><h3>Tata Consultancy Services</h3><p class="k">AI Engineer (Systems Engineer) · Gandhinagar · Aug 2024 — present</p></div>
+{sys}
+<p class="note">Described at a high level — no confidential employer or customer details. <a href="/work/">More on the production work →</a></p>
+<ul class="small" style="margin-top:34px">
+<li><span>Project Intern, TCS — YOLO traffic-sign MLOps on Azure (~30 FPS, &gt;90% accuracy)</span><span>2024</span></li>
+<li><span>Web Development Intern, Infolabz — Django news API</span><span>2023</span></li>
+<li><span>Microsoft Engage mentee — movie recommender</span><span>2022</span></li></ul>
 </div></section>
 
-<section id="projects" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>03</b> — FEATURED BUILDS</p><h2>Things I've actually <em>shipped.</em></h2><p>A few experiments, products and systems I've built from idea to working software. Screens shown are illustrative mockups of each product's UI.</p></div>
-{feats}
+<section id="stack"><div class="col">
+<h2 class="sh">Stack</h2>
+<p class="stackline">I work mostly with <b>Python</b>, <b>TypeScript</b>, <b>AWS</b>, <b>Bedrock</b>, <b>LangGraph</b>, <b>MCP</b>, <b>OpenSearch</b>, <b>PostgreSQL</b>, <b>FastAPI</b> and <b>Docker</b> — and whatever the problem requires.</p>
+<details class="more"><summary>everything else I've used</summary><dl>
+<dt>agents</dt><dd>LangChain · tool calling · multi-agent · agent harness engineering</dd>
+<dt>llm / rag</dt><dd>OpenAI · Gemini · DeepSeek · Ollama · embeddings · FAISS · vector search</dd>
+<dt>backend</dt><dd>Django · Node.js · REST · MongoDB · Redis</dd>
+<dt>cloud</dt><dd>Azure · Lambda · EventBridge · Textract · AgentCore</dd>
+<dt>ml / vision</dt><dd>PyTorch · YOLO · DeepLabV3 · PatchCore · Stable Diffusion · OCR · VLM</dd>
+<dt>languages</dt><dd>Java · JavaScript · SQL · C++ · C</dd></dl></details>
+<ul class="learn">{learned}</ul>
 </div></section>
 
-<section class="dark" id="meadow-deep"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>04</b> — DEEP DIVE · MEADOW</p><h2>What happens when the agent is <em>wrong?</em></h2><p>Most coding-agent demos stop at “it wrote the code.” Meadow's harness is built for the next ten seconds.</p></div>
-<div class="loop">
-<div>
-{flow(["Request","Spec","Plan","Supervisor","Engine","Tools / MCP","Git branch","Test"],"vertical")}
-<p class="pull">If tests <em>pass</em>, the phase merges.<br>If they fail, the <em>real error</em> goes back to the engine — up to 3 fix attempts.</p>
-</div>
-<div class="term" role="img" aria-label="Example terminal output of a failing test returned to the coding engine">
-<span class="c"># phase 3 · branch phase-3-auth · illustrative output</span><br>
-<span class="b">engine</span> &gt; implementing session refresh…<br>
-<span class="b">guard</span>  &gt; lint ok · types ok<br>
-<span class="b">tests</span>  &gt; <span class="r">✗ rejects expired token (expected 401, got 200)</span><br>
-<span class="b">harness</span> &gt; attempt 1/3 failed — sending the real error back<br>
-<span class="b">engine</span> &gt; patching src/auth/session.ts<br>
-<span class="b">tests</span>  &gt; <span class="g">✓ 14 passed</span><br>
-<span class="b">approval</span> &gt; merge phase-3-auth? <span class="g">[y]</span><br>
-<span class="b">audit</span>  &gt; logged · 4 tool calls · 2 test runs
-</div></div>
-<div class="chips">
-<div class="chip"><b>Branch per phase</b>Every phase is isolated, with its own guard checks and tests.</div>
-<div class="chip"><b>Supervisor agent</b>Reviews failures and reports progress over Telegram.</div>
-<div class="chip"><b>MCP + approval gates</b>Explicit tools, audit logs, and a human in the loop.</div>
-<div class="chip"><b>CodeAtlas</b>Knowledge-graph context so answers can be cited.</div>
-<div class="chip"><b>Parallel phases</b>Independent phases run side by side.</div>
-<div class="chip"><b>Flow tests</b>Headless-browser runs with desktop and mobile screenshots.</div>
-</div>
-<div class="btns" style="margin-top:44px"><a class="btn" style="background:var(--bg);color:var(--ink);border-color:var(--bg)" href="/meadow/">Read the Meadow case study {ARROW}</a><a class="btn ghost" style="color:var(--bg);border-color:#5a5a52" href="https://github.com/khushali6/Meadow" target="_blank" rel="noopener">{GHI} Source</a></div>
+<section id="about"><div class="col about">
+<h2 class="sh">About</h2>
+<p>I started with ML and computer vision, somehow ended up building agents, and now I have a habit of turning random “what if…” ideas into working products.</p>
+<p>The last 2+ years have been agentic AI, RAG, multimodal systems and computer vision — mostly at TCS, and the rest on projects outside work. I like the messy part of AI engineering: deciding what the model should do, what it absolutely shouldn't, how it uses tools, how it recovers when it's wrong, and how you know it helped.</p>
+<p>I build projects because I usually learn more by shipping something than by reading another framework's documentation.</p>
+<p class="school">B.E. Computer Engineering — Government Engineering College Gandhinagar, 2021–24 · CGPA 8.37<br>Diploma in IT — Government Polytechnic for Girls Ahmedabad, 2018–21 · CGPA 9.69</p>
 </div></section>
 
-<section id="work"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>05</b> — PRODUCTION AI @ TCS</p><h2>When the model has to work in the <em>real world.</em></h2><p>Selected production AI systems I've worked on professionally. Described at a high level; no confidential employer or customer details.</p></div>
-<div class="prod">{prod_cards()}</div>
-<div class="btns" style="margin-top:28px"><a class="btn ghost" href="/work/">All production work {ARROW}</a></div>
+<section id="workbench"><div class="col">
+<h2 class="sh">Workbench</h2>
+<p class="lead">The weird stuff. Not everything deserves a case study.</p>
+<ul class="wb">{wb}</ul>
+<p class="go"><a class="p" href="/workbench/">Open the workbench →</a><a href="{GH}?tab=repositories" target="_blank" rel="noopener">All repositories ↗</a></p>
 </div></section>
-
-<section id="think" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>06</b> — HOW I THINK ABOUT AI</p><h2>Four things I learned by <em>building</em> these systems.</h2></div>
-<div class="princ">{princ}</div>
-</div></section>
-
-<section id="stack"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>07</b> — ENGINEERING STACK</p><h2>Tools I <em>actually</em> use.</h2><p>Organised by the system they serve, not as a logo wall.</p></div>
-<div class="stack rv">{stack}</div>
-</div></section>
-
-<section id="github" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
-<div class="sec-head"><p class="eyebrow"><b>08</b> — EXPERIMENTS &amp; GITHUB</p><h2>The rest of the <em>workbench.</em></h2><p>Public repositories, fetched live from the GitHub API each time you visit.</p></div>
-<div class="repos" id="repos" aria-live="polite"></div>
-<p class="status" id="repos-status">Loading repositories from GitHub…</p>
-<div class="btns" style="margin-top:22px"><a class="btn ghost" href="{GH}?tab=repositories" target="_blank" rel="noopener">{GHI} All repositories</a></div>
-</div></section>
-
-<section id="about"><div class="wrap about">
-<div><p class="eyebrow" style="margin-bottom:18px"><b>09</b> — ABOUT</p><h2 style="margin-bottom:30px">A little <em>about me.</em></h2>
-<p>I'm an AI Engineer who likes building things that are a little more ambitious than a chatbot.</p>
-<p>I've spent the last 2+ years working across agentic AI, RAG, multimodal systems, computer vision and AI products.</p>
-<p>I enjoy the messy part of AI engineering — figuring out what the model should do, what it absolutely shouldn't do, how it should use tools, how it should recover when it's wrong, and how to know whether it actually helped.</p>
-<p>Outside of work, I build projects because I usually learn more by shipping something than by reading another framework's documentation.</p></div>
-<div class="edu" style="align-self:end"><p class="sm" style="margin-top:6px">EDUCATION</p>
-<div><b>B.E. Computer Engineering</b><span>Government Engineering College Gandhinagar · CGPA 8.37</span></div>
-<div><b>Diploma in Information Technology</b><span>Government Polytechnic for Girls Ahmedabad · CGPA 9.69</span></div></div>
-</div></section>
-{contact_block()}
+{contact()}
 '''
     return page("Khushali Pariyal — AI Engineer | Agentic AI, RAG & Generative AI",
                 "Khushali Pariyal is an AI Engineer building agentic AI systems, RAG pipelines, multimodal AI and AI products.", "/", body)
 
-# ------------------------------------------------------------------ CASE STUDIES
-def cs_sections(secs):
-    names = ["What is it?","Why I built it","The problem","How it works","Architecture","What I personally built","Interesting engineering decisions","Failure cases","Results","Screenshots / demo","What I'd build next","GitHub / Live demo"]
-    return names
-
-def case_page(p):
-    n = cs_sections(None)
-    toc = ''.join(f'<a href="#s{i+1}">{i+1:02d} · {nm}</a>' for i, nm in enumerate(n))
-    s = p["sections"]
-    def sec(i, content): return f'<section class="cs-sec" id="s{i}"><p class="n">{i:02d}</p><h2>{n[i-1]}</h2>{content}</section>'
-    ul = lambda items: '<ul>%s</ul>' % ''.join(f'<li>{x}</li>' for x in items)
-    decisions = ''.join(f'<div class="decision"><p class="q">QUESTION</p><h3>{e(q)}</h3><p>{a}</p></div>' for q, a in s["decisions"])
-    fails = ''.join(f'<div class="fail"><b>{e(a)}</b> {e(b)}</div>' for a, b in s["failures"])
-    links = ''
-    if p.get("live"): links += f'<a class="btn" href="{p["live"]}" target="_blank" rel="noopener">Live demo {EXT}</a>'
-    if p.get("gh"): links += f'<a class="btn ghost" href="{p["gh"]}" target="_blank" rel="noopener">{GHI} GitHub</a>'
-    if not links: links = f'<a class="btn ghost" href="{GH}" target="_blank" rel="noopener">{GHI} GitHub profile</a>'
-    meta = f'<div class="ghmeta" data-repo="{p["repo"]}" style="margin-top:0"></div>' if p.get("repo") else ''
-    shot = p.get("shot")
-    shot_html = f'<figure class="shot cs-shot"><img src="/assets/img/{shot}.svg" alt="{e(p["alt"])}" width="1200" height="800"><figcaption>ILLUSTRATIVE UI MOCKUP · {p["name"]} — not a literal screenshot</figcaption></figure>' if shot else ''
-    arch = s["arch"]
-    body = f'''
-<section class="cs-hero" style="padding-bottom:0"><div class="wrap">
-<p class="eyebrow"><a href="/#projects" style="text-decoration:none">← ALL PROJECTS</a> &nbsp;·&nbsp; <b>{p["label"]}</b></p>
-<h1>{e(p["head"])}</h1>
-<p class="lead">{e(p["blurb"])}</p>
-{flow(p["steps"], "big")}
-<div class="cs-meta"><div><b>Type</b>{e(p["type"])}</div><div><b>Role</b>{e(p["role"])}</div><div><b>Stack</b>{e(", ".join(p["tags"]))}</div>{meta}</div>
-{shot_html}
-</div></section>
-<div class="wrap"><div class="cs-body">
-<nav class="toc" aria-label="Case study sections">{toc}</nav>
-<div>
-{sec(1, s["what"])}
-{sec(2, s["why"])}
-{sec(3, s["problem"])}
-{sec(4, ul(s["how"]))}
-{sec(5, arch)}
-{sec(6, ul(s["built"]))}
-{sec(7, decisions)}
-{sec(8, fails)}
-{sec(9, s["results"])}
-{sec(10, s["demo"])}
-{sec(11, ul(s["next"]))}
-{sec(12, '<div class="btns">%s</div>' % links)}
-</div></div>
-<div class="pager"><a href="{p["prev"][1]}"><small>← PREVIOUS</small>{p["prev"][0]}</a><a href="{p["next"][1]}" style="text-align:right"><small>NEXT →</small>{p["next"][0]}</a></div>
-</div>
-{contact_block()}
-'''
-    return page(f'{p["name"].title()} — {p["head"]} | Khushali Pariyal', p["blurb"], f'/{p["slug"]}/', body, cur="Projects")
-
+# ------------------------------------------------------------------ CASE PAGES
 def archexplorer(nodes):
-    btns = ''.join(f'<button role="tab" data-target="n{i}" aria-selected="false">{e(t)}</button>' for i, (t, _, _) in enumerate(nodes))
-    panels = ''.join(f'<div data-panel="n{i}" hidden><h3>{e(t)}</h3><p>{d}</p>{("<div class=term>%s</div>" % c) if c else ""}</div>' for i, (t, d, c) in enumerate(nodes))
-    return f'<p>Click through the pipeline to see what each stage does.</p><div class="arch"><div class="nodes" role="tablist" aria-label="Pipeline stages">{btns}</div><div class="panel">{panels}</div></div>'
+    b = ''.join(f'<button role="tab" data-target="n{i}" aria-selected="false">{e(t)}</button>' for i, (t, _, _) in enumerate(nodes))
+    p = ''.join(f'<div data-panel="n{i}" hidden><h3>{e(t)}</h3><p>{d}</p>{("<div class=term>%s</div>" % c) if c else ""}</div>' for i, (t, d, c) in enumerate(nodes))
+    return f'<p>Click through the pipeline.</p><div class="arch"><div class="nodes" role="tablist" aria-label="Pipeline stages">{b}</div><div class="panel">{p}</div></div>'
 
-MEADOW = dict(slug="meadow", name="MEADOW", label="AGENTIC CODING SYSTEM", head="Your coding environment, from your pocket.",
-  blurb="Meadow is a local-first agentic coding system that turns a request into a planned, tested and reviewable coding workflow.",
-  steps=["Request","Spec","Plan","Supervisor","Engine","Tools / MCP","Git","Test","Review","Merge"],
-  type="Open-source personal project", role="Designed and built end to end", tags=["Agentic AI","MCP","Tool Calling","TypeScript","Harness Engineering"],
-  repo="Meadow", gh="https://github.com/khushali6/Meadow", live=None, shot="meadow", alt=PROJECTS[0]["alt"], prev=("Work — Production AI","/work/"), next=("Casora","/casora/"),
-  sections=dict(
-   what="<p>Meadow is an open-source, local-first agentic system. You give it a request — as text, voice, or a <span class='mono'>PLAN.md</span> — and it writes a specification and a phased plan, then drives a coding engine (Cursor CLI) through the plan one phase at a time, after human-in-the-loop approval from a dashboard or Telegram.</p><div class='callout'>The interesting part isn't that an LLM writes code. It's what happens when the code it writes is wrong.</div>",
-   why="<p>Coding agents are easy to demo and much harder to trust. I wanted to work on the part that sits <em>around</em> the model: the harness that decides what it may touch, checks what it produced, and puts a human back in the loop when it matters.</p>",
-   problem="<p>A single long agent session tends to drift, mixes unrelated changes together, and leaves little evidence of what it actually did. When something breaks, you can't easily tell which step caused it, and you can't undo one step without undoing everything.</p>",
-   how=["<b>Intake.</b> A request arrives as text, voice or PLAN.md.","<b>Spec and plan.</b> Meadow writes a specification and a phased plan for approval.","<b>Approve.</b> A human approves the plan from the dashboard or Telegram.","<b>Run each phase.</b> The coding engine works on its own git branch, with guard checks and tests.","<b>Recover.</b> Failures go back to the engine with the real error, for up to 3 fix attempts.","<b>Merge.</b> Only passing work merges."],
-   arch=archexplorer([
-    ("Request / Spec / Plan","Text, voice or a PLAN.md becomes a specification and a phased plan. Phases are the unit of work, approval and rollback.","<span class='c'># PLAN.md</span><br>1. scaffold &amp; schema<br>2. api routes<br>3. auth flow<br>4. dashboard ui"),
-    ("Supervisor","A supervisor agent (Ollama, FreeLLMAPI or Claude) reviews failures, reports progress over Telegram, and runs independent phases in parallel.",None),
-    ("Coding engine","The coding engine (Cursor CLI) does the actual editing, one phase at a time, inside the phase's branch.",None),
-    ("Tools / MCP","Tool calling and MCP tools give the agent explicit access to its environment. Approval gates stop uncontrolled actions, and every call lands in an audit log.","<span class='b'>tool</span> fs.write src/auth/session.ts<br><span class='b'>gate</span> approval required: shell.exec<br><span class='g'>audit</span> recorded"),
-    ("Git branch","Each phase runs on its own branch, so work is isolated, reviewable and reversible.",None),
-    ("Guard + tests","Guard checks and tests decide whether a phase is allowed to merge. Headless-browser flow tests add desktop and mobile screenshots.","<span class='r'>✗ expected 401, got 200</span><br>→ real error returned to the engine"),
-    ("Pass → merge · Fail → retry","Pass: the phase merges. Fail: the actual error returns to the engine for another attempt, up to 3 times. Work that still fails does not merge.",None),
-    ("CodeAtlas","A knowledge graph of the codebase that gives the agent structured context, so answers can be cited rather than guessed.",None)]),
-   built=["The agent harness: branch-per-phase execution, guard checks, test runs and the retry loop.","The supervisor agent and Telegram reporting, including parallel execution of independent phases.","Tool calling and MCP integration with approval gates and audit logs.","The CodeAtlas knowledge graph for cited codebase answers.","Headless-browser flow tests with desktop and mobile screenshots.","Dashboard and Telegram interfaces for approvals."],
-   decisions=[("Why does every phase get its own Git branch?","Because it makes every phase independently checkable and reversible. A failing phase can't contaminate the others, and merging becomes a decision made on evidence rather than a side-effect of the agent finishing."),
-              ("Why return the real error instead of asking the model to “try again”?","A retry with no information repeats the same mistake. Sending the actual failing output gives the engine something concrete to fix, which is also what a developer would do."),
-              ("Why approval gates and audit logs?","Giving agents tools, not superpowers: the agent should act through explicit, inspectable tools, with a human able to veto risky actions and a record of what happened."),
-              ("Why local-first?","Your code and keys stay on your machine, and the human stays in control of what is allowed to run.")],
-   failures=[("Tests fail repeatedly.","After the allowed fix attempts the phase doesn't merge; the supervisor reviews the failure and a human decides what happens next."),("The engine goes down a wrong path.","The branch-per-phase layout means the damage is contained to one reviewable branch."),("An action needs more trust than the agent has.","The approval gate pauses the run until a human allows or rejects it.")],
-   results="<p>Meadow is open source and runs real plan → build → test → merge cycles end to end. I haven't published benchmark numbers for it yet, so I'm not going to quote any here.</p>",
-   demo="<p>The mockup above shows the dashboard: phases on the left, a failing test being returned to the engine, an approval gate and the audit log. The source code is on GitHub.</p>",
-   next=["An evaluation suite that measures success rate and retries across a fixed set of tasks.","Richer supervisor policies, like when to stop retrying and escalate.","More MCP tools with finer-grained approval rules."]))
+def case(k, c, prev, nxt):
+    p = P[k]
+    ul = lambda it: '<ul>%s</ul>' % ''.join(f'<li>{x}</li>' for x in it)
+    dec = ''.join(f'<div class="decision"><h3>{e(q)}</h3><p>{a}</p></div>' for q, a in c["decisions"])
+    fails = ''.join(f'<div class="fail"><b>{e(a)}</b> {e(b)}</div>' for a, b in c["failures"])
+    links = []
+    if p["live"]: links.append(f'<a class="p" href="{p["live"]}" target="_blank" rel="noopener">Live demo ↗</a>')
+    if p["gh"]: links.append(f'<a class="p" href="{p["gh"]}" target="_blank" rel="noopener">Source on GitHub ↗</a>')
+    if not links: links.append(f'<a href="{GH}" target="_blank" rel="noopener">GitHub ↗</a>')
+    media = c.get("media") or shot(k, p["alt"], p["name"])
+    meta = f'<span data-repo="{p["repo"]}"></span>' if p["repo"] else ''
+    sec = lambda h, inner: f'<section class="cs-sec"><h2>{h}</h2>{inner}</section>'
+    body = f'''<article class="cs"><div class="wide" style="padding-top:56px">
+<div class="col" style="padding:0"><a class="back" href="/#work">← work</a>
+<p class="hello" style="margin-top:22px">{p["kicker"]}</p>
+<h1>{e(p["head"])}</h1>
+<p class="intro">{e(c["intro"])}</p>
+<p class="facts2"><span><b>{e(c["type"])}</b></span><span>{e(c["role"])}</span>{meta}</p></div>
+{media}
+</div>
+<div class="col">
+{sec("Overview", c["overview"])}
+{sec("How it works", ul(c["how"]) + c["arch"])}
+{sec("What I built", ul(c["built"]))}
+{sec("The interesting decisions", dec)}
+{sec("Where it breaks", fails)}
+{sec("Results", c["results"])}
+{sec("What I'd build next", ul(c["next"]))}
+<section class="cs-sec"><h2>Try it</h2><p class="go">{''.join(links)}</p></section>
+<div class="pager"><a href="{prev[1]}"><small>← PREVIOUS</small>{prev[0]}</a><a href="{nxt[1]}" style="text-align:right"><small>NEXT →</small>{nxt[0]}</a></div>
+</div></article>
+{contact()}'''
+    return page(f'{p["name"]} — {p["head"]} | Khushali Pariyal', p["line"], f"/{k}/", body, cur="Work")
 
-CASORA = dict(slug="casora", name="CASORA", label="AI DECISION INTELLIGENCE", head="Real estate research without the broker maze.",
-  blurb="Casora is an AI-powered real-estate research product for searching, comparing and understanding homes across India using verified information and locality-level intelligence.",
-  steps=["Ask","Search","Verify","Compare","Decide"], type="Deployed personal product", role="Designed and built end to end", tags=["LLM","Semantic Search","Investment Analytics","Explainable AI","Full-Stack"],
-  repo=None, gh=None, live="https://casora-nine.vercel.app/", shot="casora", alt=PROJECTS[1]["alt"], prev=("Meadow","/meadow/"), next=("SplitMate","/splitmate/"),
-  sections=dict(
-   what="<p>Casora turns messy real-estate information into structured decisions for buyers and investors. It lets you search, compare and understand homes across India using verified listings and neighbourhood-level price intelligence.</p>",
-   why="<p>Property discovery is often broker-driven and opaque. I wanted to see how far data-backed, explainable decisions could replace guesswork — and to build something where the AI is a product, not a chat box.</p>",
-   problem="<p>Listings are noisy, prices are hard to compare, and a language model will happily produce a confident-sounding number that isn't grounded in anything. In a decision this large, an invented figure is worse than no figure.</p>",
-   how=["<b>Ask</b> in natural language, e.g. “3 BHK in Bengaluru under ₹2 Cr” or “80 lakh se kam in Ahmedabad”.","<b>Understand</b> the query and extract hard filters such as city, BHK and budget.","<b>Retrieve</b> candidates with semantic search and filtering.","<b>Verify</b> against evidence — price trends and comparable listings.","<b>Compare</b> properties and localities.","<b>Decide</b>: scoring and ranking produce an explainable recommendation."],
-   arch=flow(["User query","Query understanding","Hard filters","Retrieval","Evidence","Locality / property analysis","Decision layer","Explainable answer"],"vertical") + "<p style='margin-top:18px'>Outcomes the decision layer can reach: <b>Buy</b> · <b>Buy at the right price</b> · <b>Verify first</b> · <b>Compare</b>.</p>",
-   built=["Natural-language and mixed-language query handling.","Semantic search over listings plus hard filters.","The AI investment decision layer: scoring and ranking models over price trends, comparable listings and predictive analytics.","Grounded conversational discovery using LLMs and prompt engineering.","The full-stack web product, deployed on Vercel."],
-   decisions=[("Why does the product refuse to invent missing property information?","Because trust is the product. If the evidence isn't there, the right answer is “verify first”, not a plausible-sounding guess."),("Why separate retrieval from the decision layer?","Retrieval finds evidence; the decision layer weighs it. Keeping them apart makes recommendations explainable and easier to test."),("Why hard filters before semantic search?","Budget and BHK are constraints, not preferences. They should never be traded away for a better semantic match.")],
-   failures=[("Missing data.","If a listing or locality lacks evidence, Casora surfaces that gap and suggests verifying rather than filling it in."),("Ambiguous queries.","Vague or conflicting requests should lead to a clarification, not a silent assumption.")],
-   results="<p>Casora is live. I'm deliberately not quoting user numbers or market statistics here — the site makes no unsupported claims about live property data, and neither does this page.</p>",
-   demo="<p>The mockup above is an illustration of the search → evidence → decision experience. Try the real product via the live demo link below.</p>",
-   next=["More cities and locality coverage.","Backtesting recommendations against historical data.","Side-by-side comparison views with shareable reports."]))
+MEADOW_MEDIA = '''<figure class="player" style="margin-top:34px"><video data-auto muted loop playsinline controls preload="none" poster="/assets/media/meadow-3.jpg" aria-label="Meadow demo"><source src="/assets/media/meadow-demo.mp4" type="video/mp4"></video><figcaption><span>Real demo from the Meadow README</span><span>one Telegram message → a tested app</span></figcaption></figure>'''
+MEADOW_STILLS = '''<div class="stills"><figure><img src="/assets/media/meadow-3.jpg" alt="Meadow demo frame: send one message" loading="lazy" width="1280" height="720"><figcaption>01 · Request</figcaption></figure><figure><img src="/assets/media/meadow-11.jpg" alt="Meadow demo frame: plan awaiting approval" loading="lazy" width="1280" height="720"><figcaption>03 · Build, phase by phase</figcaption></figure><figure><img src="/assets/media/meadow-15.jpg" alt="Meadow demo frame: report with real browser tests" loading="lazy" width="1280" height="720"><figcaption>04 · Report, with real browser tests</figcaption></figure><figure><img src="/assets/media/meadow-20.jpg" alt="Meadow title card" loading="lazy" width="1280" height="720"><figcaption>Runs on your own computer · MIT</figcaption></figure></div>'''
 
-SPLIT = dict(slug="splitmate", name="SPLITMATE", label="MULTIMODAL AI", head="Take a photo. Split the bill.",
-  blurb="An AI expense-sharing product that understands receipts and turns them into structured expenses and fair settlements.",
-  steps=["Receipt","OCR + VLM","Items","Confirm","Math","Settle"], type="Deployed personal product", role="Designed and built end to end", tags=["OCR","VLM","Gemini API","Deterministic Engine","Debt Graph","Full-Stack"],
-  repo=None, gh=None, live="https://splitmate-two-iota.vercel.app/", shot="splitmate", alt=PROJECTS[2]["alt"], prev=("Casora","/casora/"), next=("Laya","/laya/"),
-  sections=dict(
-   what="<p>SplitMate is an AI bill-splitting web app. Upload a receipt image or PDF, and it extracts line items, quantities, taxes and service charges, lets you say who had what, and works out a fair, minimal set of settlements.</p><div class='callout'>The model understands the receipt. Code handles the money.</div>",
-   why="<p>Splitting a restaurant bill is a perfect small problem for mixing AI and code: reading the receipt is genuinely ambiguous and visual, while splitting it is pure arithmetic. I wanted to build the version that treats those two jobs differently.</p>",
-   problem="<p>Receipts are messy, photographed at angles, and full of taxes and service charges. LLMs read them well — but are unreliable at arithmetic, and money is exactly where small errors are unacceptable.</p>",
-   how=["<b>Receipt in.</b> An image or PDF.","<b>OCR + VLM</b> extract line items, quantities, taxes and service charges into structured data.","<b>Human review</b> — you confirm or correct the extracted items.","<b>Assign</b> who had what.","<b>Deterministic calculation</b> computes totals, proportional tax and rounding, and reconciles to the receipt total.","<b>Debt graph</b> reduces everyone's balances to the minimum number of settlements."],
-   arch=flow(["Receipt","OCR + VLM","Structured items","Who had what?","Deterministic calculation","Minimum settlements"],"vertical")+"<p style='margin-top:18px'>Principle: use AI where there is ambiguity, use deterministic code where correctness matters.</p>",
-   built=["The extraction pipeline using OCR and Vision-Language Models (Gemini).","The human-in-the-loop review workflow.","A deterministic math engine: totals, proportional tax, rounding and reconciliation.","A debt-graph algorithm that minimises the number of settlements in a group.","Configurable LLM endpoints — bring your own AI.","The full-stack web app, deployed on Vercel."],
-   decisions=[("Why doesn't the LLM calculate the bill?","LLMs are probabilistic and can be subtly wrong on arithmetic. A deterministic engine gives exact, testable, reproducible totals, and can be reconciled against the printed receipt total."),("Why keep a human review step?","Extraction can misread a quantity or a line. Showing the structured items before any math happens catches errors at the cheapest point."),("Why a debt graph?","Settling every pairwise debt is noisy. Collapsing balances into a graph and reducing it gives the fewest transfers.")],
-   failures=[("Blurry or cropped receipt.","Low-confidence items are flagged for review instead of silently trusted."),("Totals don't reconcile.","Reconciliation catches mismatches between computed and printed totals before anyone is asked to pay.")],
-   results="<p>SplitMate is live and works end to end from receipt to settlement plan. I don't quote usage statistics because I haven't published any.</p>",
-   demo="<p>The mockup shows the pipeline hero: receipt on the left, extracted and assigned items in the middle, the math engine and the final settlements on the right. Names and amounts are sample data.</p>",
-   next=["Multi-currency support and saved groups.","Evaluation set of receipts to measure extraction accuracy per model.","Offline-friendly capture flow."]))
+C = {}
+C["meadow"] = dict(type="Open source · beta · MIT", role="Designed and built end to end", media=MEADOW_MEDIA,
+ intro="Describe what you want. Meadow plans it, builds it phase by phase with a real coding engine, tests every step, and reports back on Telegram.",
+ overview="<p>Meadow runs on your own computer. You send a request from a dashboard or Telegram — text, voice or a <span class='mono'>PLAN.md</span> — approve the plan, and Meadow drives a coding engine (the Cursor CLI is the most tested; Codex CLI, Gemini CLI or any command-line tool also work) until every phase passes its checks. Code, memory and keys stay on your machine.</p><div class='callout'>The interesting part isn't that an LLM writes code. It's what happens when the code it writes is wrong.</div><p style='margin-top:1.2em'>I wanted to work on the part <em>around</em> the model: the harness that decides what it may touch, checks what it produced, and puts a human back in the loop. A single long agent session drifts, mixes unrelated changes and leaves little evidence — so Meadow breaks the work into phases that can each fail on their own.</p>",
+ how=["<b>Request.</b> Meadow classifies it (new app, feature, bug, question) and asks up to five short questions.","<b>Spec and plan.</b> It writes <span class='mono'>SPEC.md</span> and a phased <span class='mono'>PLAN.md</span>. Every phase has at least one check that can actually fail.","<b>Approval.</b> Nothing touches code until you approve — on the dashboard or with one tap on Telegram.","<b>Build.</b> Each phase runs on its own branch; guards inspect the diff, checks run, and failures go back to the engine with the real error, up to three attempts.","<b>Merge.</b> Only passing work is committed and fast-forwarded onto main, with a summary, diff stats and screenshots.","<b>Browser tests.</b> For web apps, Meadow starts the app, clicks through each main user flow in a headless browser and sends desktop and mobile screenshots."],
+ arch=archexplorer([
+  ("Request → spec → plan","Text, voice or a PLAN.md becomes a specification and a phased plan. Phases are the unit of work, approval and rollback.","<span class='c'># PLAN.md</span><br>1. scaffold &amp; schema<br>2. api routes<br>3. auth flow<br>4. dashboard ui"),
+  ("Supervisor","A supervisor model (Ollama, FreeLLMAPI or Claude) reviews failures, reports progress over Telegram, and lets independent phases run in parallel.",None),
+  ("Coding engine","The engine does all the editing, headless, one phase at a time. The agent model only plans and summarises.",None),
+  ("Tools / MCP","Every tool has a risk level. Writes and risky commands wait for approval, every call lands in an audit log, and secrets never appear in prompts, logs or the UI.","<span class='b'>tool</span> fs.write src/auth/session.ts<br><span class='b'>gate</span> approval required: shell.exec<br><span class='g'>audit</span> recorded"),
+  ("Git branch","Each phase runs on <span class='mono'>meadow/phase-&lt;id&gt;-&lt;slug&gt;</span>, so work is isolated, reviewable and reversible.",None),
+  ("Checks + tests","Checks (<span class='mono'>cmd</span>, <span class='mono'>file_exists</span>, <span class='mono'>http</span>) decide whether a phase may merge.","<span class='r'>✗ expected 401, got 200</span><br>→ real error returned to the engine (attempt 2/3)"),
+  ("CodeAtlas","A local knowledge graph of services, APIs, tables, releases and incidents, so Meadow can answer “why did payments start failing after v2.4?” with cited evidence.",None)]) + MEADOW_STILLS,
+ built=["The harness: branch-per-phase execution, guard checks, test runs and the retry loop.","The supervisor agent, Telegram control surface and parallel execution of independent phases.","Tool calling and MCP integration with approval gates and audit logs.","CodeAtlas, the local knowledge graph, plus a search index and notes per project.","Headless-browser flow tests with desktop and mobile screenshots.","A cross-platform setup script (<span class='mono'>startup.sh</span> / <span class='mono'>startup.ps1</span>) and a <span class='mono'>meadow doctor</span> command."],
+ decisions=[("Why does every phase get its own git branch?","So each phase is independently checkable and reversible. A failing phase can't contaminate the rest, and merging becomes a decision made on evidence rather than a side-effect of the agent finishing."),
+  ("Why send the real error back instead of “try again”?","A retry without information repeats the same mistake. The actual failing output gives the engine something concrete to fix — which is what a developer would do."),
+  ("Why approval gates and audit logs?","Give agents tools, not superpowers. The agent acts through explicit, inspectable tools, a human can veto risky actions, and there's a record of what happened."),
+  ("Why local-first?","Code, memory and keys stay on your machine, and Meadow never signs in for you or reads <span class='mono'>.env</span> files.")],
+ failures=[("A phase keeps failing.","After three attempts it stops and tells you why. You can retry with a hint, skip, or roll back — it never merges."),("The checks are weak.","Meadow verifies what the checks measure, so a weak check proves little. That's why plans must include checks that can fail."),("Beyond localhost.","Browser screenshots work for web apps on localhost only.")],
+ results="<p>Meadow is open source (MIT) and in <b>beta</b>. CI tests every commit on macOS, Linux and Windows with Node 22.16, 24 and 26. I haven't published success-rate benchmarks yet, so there are no made-up numbers here.</p>",
+ next=["An evaluation suite: success rate and retries across a fixed set of tasks.","Smarter supervisor policies for when to stop retrying and escalate.","Claude Code as a first-class engine (it's listed as coming soon)."])
 
-LAYA = dict(slug="laya", name="LAYA", label="CREATIVE AI EXPERIMENT", head="What happens when AI gets a meme brain?",
-  blurb="A playful AI experiment exploring character-driven content generation and creative AI workflows.",
-  steps=["Idea","AI","Meme"], type="Personal experiment", role="Built it for fun", tags=["LLM Workflows","Creative AI","Generative"],
-  repo=None, gh=None, live="https://layameme.vercel.app/", shot="laya", alt=PROJECTS[3]["alt"], prev=("SplitMate","/splitmate/"), next=("Work — Production AI","/work/"),
-  sections=dict(
-   what="<p>Laya is a playful AI meme-generation experiment: a character with opinions, an LLM workflow, and a lot of questionable humour. Built because AI should be fun too.</p><div class='memes'><div class='meme'>When the prompt works first try<small>CHARACTER · LAYA</small></div><div class='meme'>Me reading the logs at 2 AM<small>MOOD · SHOCKED</small></div><div class='meme'>AI: “I'm sure this is correct”<small>MOOD · CONFIDENT</small></div></div>",
-   why="<p>Not everything has to be enterprise architecture. Small, silly experiments are how I try new workflows, and they keep me honest about what is actually delightful to use.</p>",
-   problem="<p>Can an LLM workflow produce content with a consistent character and sense of humour, instead of generic output?</p>",
-   how=["<b>Idea</b> in.","<b>AI</b> shapes it through a character-driven workflow.","<b>Meme</b> out, ready to share."],
-   arch=flow(["Idea","AI","Meme"]),
-   built=["The concept, character and prompt workflow.","The web experience, deployed on Vercel."],
-   decisions=[("Why a character?","A consistent voice makes generated content feel authored rather than random.")],
-   failures=[("Not funny.","Sometimes. That's the experiment.")],
-   results="<p>It exists, it's live, and it makes me laugh. No metrics — this one is purely for fun.</p>",
-   demo="<p>The cards above are illustrative samples. The real thing is one click away.</p>",
-   next=["More characters and templates.","Remix and share flows."]))
+C["casora"] = dict(type="Deployed product", role="Designed and built end to end",
+ intro="Casora turns messy real-estate information into structured decisions for buyers and investors.",
+ overview="<p>Casora is an AI-powered real-estate research platform for searching, comparing and understanding homes across India, using verified listings and neighbourhood-level price intelligence — replacing broker-driven discovery with data-backed decisions.</p><div class='callout'>Don't invent a number just because the model can.</div><p style='margin-top:1.2em'>Listings are noisy, prices are hard to compare, and a language model will happily produce a confident-sounding figure that isn't grounded in anything. In a decision this large, an invented number is worse than none.</p>",
+ how=["<b>Ask</b> in natural language: “3 BHK in Bengaluru under ₹2 Cr”, or “80 lakh se kam in Ahmedabad”.","<b>Understand</b> the query and pull out hard filters — city, BHK, budget.","<b>Retrieve</b> candidates with semantic search plus those filters.","<b>Verify</b> against evidence: price trends and comparable listings.","<b>Compare</b> properties and localities.","<b>Decide</b>: scoring and ranking produce an explainable recommendation — buy, buy at the right price, verify first, or compare."],
+ arch=flow(["Query","Understanding","Hard filters","Retrieval","Evidence","Analysis","Decision layer","Explanation"], "vertical"),
+ built=["Natural-language, mixed-language query handling.","Semantic search over listings with hard filters.","The investment decision layer: scoring and ranking over price trends, comparable listings and predictive analytics.","Grounded conversational discovery with LLMs and prompt engineering.","The full-stack product, deployed on Vercel."],
+ decisions=[("Why does it refuse to invent missing property information?","Because trust is the product. If the evidence isn't there, the right answer is “verify first”, not a plausible guess."),("Why separate retrieval from the decision layer?","Retrieval finds evidence; the decision layer weighs it. Keeping them apart makes recommendations explainable and testable."),("Why hard filters before semantic search?","Budget and BHK are constraints, not preferences. They shouldn't be traded away for a better semantic match.")],
+ failures=[("Missing data.","If a listing or locality lacks evidence, Casora says so and suggests verifying rather than filling the gap."),("Ambiguous queries.","Vague or conflicting requests should lead to a clarifying question, not a silent assumption.")],
+ results="<p>Casora is live. I don't quote user numbers or market statistics here, and the product makes no unsupported claims about live property data.</p>",
+ next=["More cities and locality coverage.","Backtesting recommendations against historical data.","Shareable side-by-side comparison reports."])
 
-# ------------------------------------------------------------------ WORK PAGE
-WORK_SYS = [
- ("REQUIREMENTS → SOFTWARE", ["AWS Bedrock","AgentCore","RAG","Amazon Textract","OpenSearch","EventBridge","Lambda"],
-  "Architected an autonomous agentic system that turns stakeholder requirements into shipped software: architecture flow, code generation, automated code review and deployment. Documents are ingested through Textract OCR into an OpenSearch vector database, with event-driven orchestration over EventBridge and Lambda.", [(75,"%","faster feature time-to-market")], ["Requirements","Retrieval","Code gen","Review","Deploy"]),
- ("ADAS TEST GENERATION", ["Multimodal RAG","FAISS","LLM","Agentic validation"],
-  "Engineered an end-to-end GenAI RAG pipeline that generates ADAS test cases from NCAP specification documents: multimodal ingestion (text, tables, images), chunking, embeddings, FAISS retrieval, LLM inference and agentic validation loops to reduce hallucination.", [(70,"%","less manual test creation"),(2,"×","test coverage")], ["Ingest","Embed","Retrieve","Generate","Validate"]),
- ("AI CODE REVIEW", ["DeepSeek","CI/CD","Static Analysis","Security"],
-  "Deployed an LLM-powered developer tooling platform for automated code review, static analysis, architectural validation and security vulnerability detection in CI/CD pipelines, raising pre-merge defect detection.", [(80,"%","less manual review effort")], ["Commit","Analyse","Review","Report"]),
- ("COMPUTER VISION INSPECTION", ["DeepLabV3","PatchCore","Stable Diffusion","PyTorch"],
-  "Built deep learning and computer vision models for railway inspection: DeepLabV3 for segmentation and PatchCore for anomaly detection across multi-camera pipelines processing 20K+ images per cycle. Stable Diffusion generated synthetic data to improve performance under variable lighting and weather.", [(18,"–22%","precision/recall improvement")], ["Capture","Segment","Detect anomalies","Report"]),
-]
+C["splitmate"] = dict(type="Deployed product", role="Designed and built end to end",
+ intro="An AI expense-sharing product that understands receipts and turns them into structured expenses and fair settlements.",
+ overview="<p>Upload a receipt image or PDF. SplitMate extracts line items, quantities, taxes and service charges, lets you say who had what, and works out a fair, minimal set of settlements.</p><div class='callout'>The model understands the receipt. Code handles the money.</div><p style='margin-top:1.2em'>Reading a receipt is ambiguous and visual — exactly what VLMs are good at. Splitting it is pure arithmetic — exactly what they're not. I wanted to build the version that treats those two jobs differently.</p>",
+ how=["<b>Receipt in</b> — image or PDF.","<b>OCR + VLM</b> extract line items, quantities, taxes and service charges into structured data.","<b>Human review</b> — confirm or correct the extracted items.","<b>Assign</b> who had what.","<b>Deterministic calculation</b> — totals, proportional tax and rounding, reconciled to the receipt total.","<b>Debt graph</b> — reduce everyone's balances to the minimum number of settlements."],
+ arch=flow(["Receipt","OCR + VLM","Structured items","Who had what?","Deterministic math","Minimum settlements"], "vertical") + "<p style='margin-top:14px;color:var(--mute)'>Use AI where there's ambiguity. Use deterministic code where correctness matters.</p>",
+ built=["The extraction pipeline with OCR and Vision-Language Models (Gemini).","The human-in-the-loop review workflow.","A deterministic math engine: totals, proportional tax, rounding, reconciliation.","A debt-graph algorithm that minimises the number of group settlements.","Configurable LLM endpoints — bring your own AI.","The full-stack web app, deployed on Vercel."],
+ decisions=[("Why doesn't the LLM calculate the bill?","LLMs can be subtly wrong at arithmetic. A deterministic engine gives exact, testable, reproducible totals and can be reconciled against the printed total."),("Why a human review step?","Extraction can misread a quantity or a line. Showing structured items before any math catches errors at the cheapest point."),("Why a debt graph?","Settling every pairwise debt is noisy. Collapsing balances into a graph and reducing it gives the fewest transfers.")],
+ failures=[("Blurry or cropped receipts.","Low-confidence items are flagged for review instead of silently trusted."),("Totals don't reconcile.","Reconciliation catches mismatches between computed and printed totals before anyone is asked to pay.")],
+ results="<p>SplitMate is live and works end to end from receipt to settlement plan. No usage statistics — I haven't published any.</p>",
+ next=["Multi-currency and saved groups.","An evaluation set of receipts to measure extraction accuracy per model.","A friendlier mobile capture flow."])
+
+C["laya"] = dict(type="Personal experiment", role="Built for fun",
+ intro="A playful AI experiment exploring character-driven content generation and creative AI workflows.",
+ overview="<p>Laya is a character with opinions, an LLM workflow, and a lot of questionable humour. Not everything has to be enterprise architecture — small, silly experiments are how I try new workflows, and they keep me honest about what's actually delightful to use.</p><div class='memes' style='display:grid;gap:10px;margin-top:22px'><span class='chipmeme' style='transform:rotate(-1deg)'>when the prompt works first try</span><span class='chipmeme' style='transform:rotate(1deg)'>me reading the logs at 2 AM</span><span class='chipmeme' style='transform:rotate(-.5deg)'>AI: “I'm sure this is correct”</span></div>",
+ how=["<b>Idea</b> in.","<b>AI</b> shapes it through a character-driven workflow.","<b>Meme</b> out, ready to share."],
+ arch=flow(["Idea","AI","Meme"]),
+ built=["The concept, character and prompt workflow.","The web experience, deployed on Vercel."],
+ decisions=[("Why a character?","A consistent voice makes generated content feel authored rather than random.")],
+ failures=[("Not funny.","Sometimes. That's the experiment.")],
+ results="<p>It exists, it's live, and it makes me laugh. No metrics — this one is purely for fun.</p>",
+ next=["More characters and templates.","Remix and share flows."])
+
+# ------------------------------------------------------------------ WORK + WORKBENCH
 def work_page():
-    sysh = ''
-    for t, st, d, ms, fl in WORK_SYS:
-        m = ''.join(f'<div class="metric"><div class="n"><span data-count="{n}" data-suffix="{s}">0{s}</span></div><div class="t">{e(l)}</div></div>' for n, s, l in ms)
-        sysh += f'<article class="sys rv"><div class="top"><div><p class="sm">PRODUCTION · TCS</p><h3>{t}</h3></div></div>{tags(st)}<p style="margin:20px 0">{e(d)}</p>{flow(fl)}<div class="metrics">{m}</div></article>'
-    earlier = ''.join(f'<li>{x}</li>' for x in [
-      "<b>Traffic-sign MLOps (TCS project intern).</b> Automated an end-to-end MLOps pipeline on Azure with GitLab CI/CD to train, version and deploy a YOLO-based model for real-time traffic sign and speed-limit detection — ~30 FPS inference and &gt;90% detection accuracy.",
-      "<b>News API (Infolabz intern).</b> Engineered a Django RESTful News API for real-time article aggregation across multiple categories.",
-      "<b>Movie recommender (Microsoft Engage mentee).</b> Built a movie recommendation system with content-based and collaborative filtering and ranking, under mentorship from Microsoft engineers."])
-    body = f'''
-<section class="cs-hero"><div class="wrap">
-<p class="eyebrow"><a href="/#work" style="text-decoration:none">← HOME</a> &nbsp;·&nbsp; <b>PRODUCTION AI @ TCS</b></p>
+    sys = ''.join(f'<section class="cs-sec"><h2>{t}</h2><p class="facts2" style="margin:0 0 12px"><b>{m}</b></p><p>{e(d)}</p>{tags(st)}</section>' for t, m, d, st in SYS)
+    earlier = '''<ul><li><b>Traffic-sign MLOps</b> (TCS project intern, Jan–May 2024). Automated an end-to-end pipeline on Azure with GitLab CI/CD to train, version and deploy a YOLO-based model for real-time traffic-sign and speed-limit detection — ~30 FPS inference and &gt;90% detection accuracy.</li><li><b>News API</b> (Infolabz, 2023). A Django RESTful API aggregating articles across categories in real time.</li><li><b>Movie recommender</b> (Microsoft Engage, 2022). Content-based and collaborative filtering with ranking, under mentorship from Microsoft engineers.</li></ul>'''
+    body = f'''<div class="col" style="padding-top:56px"><a class="back" href="/#experience">← experience</a>
+<p class="hello" style="margin-top:22px">Tata Consultancy Services · Aug 2024 — present</p>
 <h1>When the model has to work in the real world.</h1>
-<p class="lead">Things I built where the model had to work in the real world — as an AI Engineer at Tata Consultancy Services (Aug 2024 – present).</p>
-<p class="status">Professional work, described at a high level. No confidential employer or customer information is shown, and the metrics are the ones from my resume.</p>
-</div></section>
-<section style="padding-top:30px"><div class="wrap">{sysh}
-<div class="sys rv"><p class="sm">EARLIER WORK</p><div class="cs-sec" style="padding:0"><ul>{earlier}</ul></div></div>
-<div class="pager"><a href="/laya/"><small>← PREVIOUS</small>Laya</a><a href="/meadow/" style="text-align:right"><small>NEXT →</small>Meadow</a></div>
-</div></section>
-{contact_block()}'''
-    return page("Production AI at TCS | Khushali Pariyal", "Selected production AI systems: agentic requirements-to-software, ADAS test generation, AI code review and computer-vision inspection.", "/work/", body, cur="Work")
+<p class="intro">Selected production AI systems, described at a high level. No confidential employer or customer details; the metrics are the ones from my resume.</p>
+{sys}
+<section class="cs-sec"><h2>Earlier work</h2>{earlier}</section>
+<div class="pager"><a href="/laya/"><small>← PREVIOUS</small>Laya</a><a href="/workbench/" style="text-align:right"><small>NEXT →</small>Workbench</a></div></div>
+{contact()}'''
+    return page("Production AI at TCS | Khushali Pariyal", "Production AI systems: agentic requirements-to-software, ADAS test generation, AI code review and computer-vision inspection.", "/work/", body, cur="Experience")
+
+def workbench_page():
+    rows = ''.join(f'<li><a href="https://github.com/khushali6/{r}" target="_blank" rel="noopener"><b>{n}</b><span>{e(d)}</span><em data-live="{r}"></em></a></li>' for n, d, r in WB)
+    tl = [("2022","Microsoft Engage — a movie recommender (content-based + collaborative filtering)."),("2023","Django news API at Infolabz. First time shipping a backend people could actually call."),("Jan 2024","TCS intern: YOLO traffic-sign detection with an MLOps pipeline on Azure."),("Aug 2024","TCS AI engineer: computer vision, then RAG, then agents."),("Now","Meadow, Casora, SplitMate, Laya — and whatever I build next at 2 AM.")]
+    t = ''.join(f'<li><b>{a}</b><span>{e(b)}</span></li>' for a, b in tl)
+    body = f'''<div class="col" style="padding-top:56px"><a class="back" href="/">← home</a>
+<p class="hello" style="margin-top:22px">The experimental layer</p>
+<h1>Workbench.</h1>
+<p class="intro">Things I built at 2 AM, older experiments, and anything that didn't deserve a full case study. Descriptions are written by me; the “updated” numbers come live from the GitHub API.</p>
+<section><h2 class="sh">Poke around</h2><div class="tw" id="term"><div class="out"></div><form autocomplete="off"><span class="pr">$</span><input aria-label="Terminal input" spellcheck="false" autocapitalize="off"></form></div></section>
+<section><h2 class="sh">Archive</h2><ul class="wb">{rows}</ul><p class="go"><a href="{GH}?tab=repositories" target="_blank" rel="noopener">All public repositories ↗</a></p></section>
+<section><h2 class="sh">How it got here</h2><ul class="tl">{t}</ul></section></div>
+{contact()}'''
+    return page("Workbench | Khushali Pariyal", "Experiments, older projects and things Khushali Pariyal built at 2 AM.", "/workbench/", body, cur="Workbench")
 
 def write(path, content):
     full = os.path.join(ROOT, path.strip("/"), "index.html") if path != "/" else os.path.join(ROOT, "index.html")
     os.makedirs(os.path.dirname(full), exist_ok=True)
     open(full, "w").write(content)
 
-write("/", index())
-for p in (MEADOW, CASORA, SPLIT, LAYA): write("/" + p["slug"], case_page(p))
+write("/", home())
+order = ["meadow", "casora", "splitmate", "laya"]
+names = {"meadow": "Meadow", "casora": "Casora", "splitmate": "SplitMate", "laya": "Laya"}
+for i, k in enumerate(order):
+    prev = ("Home", "/") if i == 0 else (names[order[i - 1]], f"/{order[i-1]}/")
+    nxt = ("Production work at TCS", "/work/") if i == len(order) - 1 else (names[order[i + 1]], f"/{order[i+1]}/")
+    write("/" + k, case(k, C[k], prev, nxt))
 write("/work", work_page())
-urls = ["/","/meadow/","/casora/","/splitmate/","/laya/","/work/"]
+write("/workbench", workbench_page())
+urls = ["/", "/meadow/", "/casora/", "/splitmate/", "/laya/", "/work/", "/workbench/"]
 open(os.path.join(ROOT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f"<url><loc>{SITE}{u}</loc></url>\n" for u in urls) + '</urlset>\n')
 open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
 print("built")
