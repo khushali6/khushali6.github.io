@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif">
+<rect width="1200" height="800" fill="#e0e8f1"/>
+<rect x="40" y="40" width="1120" height="720" rx="16" fill="#fbf9f3" stroke="#d9d2c0"/>
+<rect x="40" y="40" width="1120" height="52" rx="16" fill="#f1ecdf"/><rect x="40" y="76" width="1120" height="16" fill="#f1ecdf"/>
+<circle cx="70" cy="66" r="6" fill="#d9d2c0"/><circle cx="92" cy="66" r="6" fill="#d9d2c0"/><circle cx="114" cy="66" r="6" fill="#d9d2c0"/>
+<text x="600" y="71" text-anchor="middle" font-size="14" fill="#7c7a70" font-family="monospace">casora · search</text>
+<text x="80" y="150" font-size="26" font-family="Georgia,serif" fill="#1d1d1b">Casora</text>
+<rect x="80" y="180" width="1040" height="64" rx="32" fill="#fff" stroke="#1d1d1b" stroke-width="1.5"/>
+<text x="112" y="220" font-size="20" fill="#1d1d1b">3 BHK in Bengaluru under ₹2 Cr</text>
+<rect x="960" y="192" width="148" height="40" rx="20" fill="#2f5d46"/><text x="1034" y="218" text-anchor="middle" fill="#fff" font-size="15">Ask</text>
+<g font-size="12" font-family="monospace" letter-spacing="1">
+<rect x="80" y="266" width="70" height="28" rx="14" fill="#2f5d46"/><text x="115" y="285" text-anchor="middle" fill="#fff">ASK</text>
+<rect x="160" y="266" width="86" height="28" rx="14" fill="#2f5d46"/><text x="203" y="285" text-anchor="middle" fill="#fff">SEARCH</text>
+<rect x="256" y="266" width="86" height="28" rx="14" fill="#2f5d46"/><text x="299" y="285" text-anchor="middle" fill="#fff">VERIFY</text>
+<rect x="352" y="266" width="94" height="28" rx="14" fill="#f6f2e9" stroke="#d9d2c0"/><text x="399" y="285" text-anchor="middle" fill="#7c7a70">COMPARE</text>
+<rect x="456" y="266" width="86" height="28" rx="14" fill="#f6f2e9" stroke="#d9d2c0"/><text x="499" y="285" text-anchor="middle" fill="#7c7a70">DECIDE</text></g>
+<!-- listing cards -->
+<g>
+<rect x="80" y="324" width="330" height="270" rx="14" fill="#fff" stroke="#d9d2c0"/>
+<rect x="96" y="340" width="298" height="120" rx="8" fill="#cdd9e8"/><path d="M96 430 L170 380 L230 420 L300 360 L394 440 V460 H96Z" fill="#b2c3d9"/>
+<text x="96" y="492" font-size="18" fill="#1d1d1b" font-family="Georgia,serif">3 BHK · Whitefield</text><text x="96" y="518" font-size="14" fill="#7c7a70">1,480 sq ft · ready to move</text>
+<rect x="96" y="540" width="130" height="30" rx="15" fill="#e1ebdf"/><text x="161" y="560" text-anchor="middle" font-size="12" fill="#2f5d46" font-family="monospace">SOURCE LINKED</text>
+<rect x="430" y="324" width="330" height="270" rx="14" fill="#fff" stroke="#d9d2c0"/>
+<rect x="446" y="340" width="298" height="120" rx="8" fill="#d9e3d6"/><path d="M446 430 L520 390 L590 425 L660 370 L744 430 V460 H446Z" fill="#bfd0ba"/>
+<text x="446" y="492" font-size="18" fill="#1d1d1b" font-family="Georgia,serif">3 BHK · Sarjapur Road</text><text x="446" y="518" font-size="14" fill="#7c7a70">1,320 sq ft · under construction</text>
+<rect x="446" y="540" width="130" height="30" rx="15" fill="#e1ebdf"/><text x="511" y="560" text-anchor="middle" font-size="12" fill="#2f5d46" font-family="monospace">SOURCE LINKED</text>
+</g>
+<!-- decision panel -->
+<rect x="790" y="324" width="330" height="270" rx="14" fill="#1d1d1b"/>
+<text x="814" y="358" font-size="12" letter-spacing="2" fill="#9c9a8d" font-family="monospace">DECISION LAYER</text>
+<text x="814" y="402" font-size="28" fill="#f6f2e9" font-family="Georgia,serif">Verify first</text>
+<g font-size="14" fill="#c9c6b8"><text x="814" y="436">✓ price vs. comparable listings</text><text x="814" y="462">✓ locality trend signal</text><text x="814" y="488" fill="#e59a85">! ownership docs not confirmed</text><text x="814" y="514" fill="#9c9a8d">No data → no number. Never invented.</text></g>
+<g font-size="11" font-family="monospace" letter-spacing="1"><rect x="814" y="534" width="48" height="26" rx="13" fill="none" stroke="#5a5a52"/><text x="838" y="552" text-anchor="middle" fill="#9c9a8d">BUY</text>
+<rect x="870" y="534" width="104" height="26" rx="13" fill="none" stroke="#5a5a52"/><text x="922" y="552" text-anchor="middle" fill="#9c9a8d">RIGHT PRICE</text>
+<rect x="982" y="534" width="90" height="26" rx="13" fill="#f6f2e9"/><text x="1027" y="552" text-anchor="middle" fill="#1d1d1b">VERIFY</text></g>
+<!-- explanation -->
+<rect x="80" y="620" width="1040" height="100" rx="14" fill="#f1ecdf"/>
+<text x="104" y="654" font-size="12" letter-spacing="2" fill="#7c7a70" font-family="monospace">WHY THIS ANSWER</text>
+<text x="104" y="686" font-size="16" fill="#1d1d1b">Both listings match your budget and BHK filters. The first is priced in line with comparable listings;</text>
+<text x="104" y="708" font-size="16" fill="#1d1d1b">confirm ownership documents before negotiating — the platform won't guess what it can't verify.</text>
+</svg>
