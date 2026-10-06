@@ -100,18 +100,6 @@ h2.title{font-size:clamp(28px,3.4vw,36px);line-height:1.05;font-weight:700;lette
 section{position:relative}
 .about{background:var(--surface);padding:99px 0;border-block:2px solid var(--line)}
 .about__grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:72px;align-items:start}
-.portrait{perspective:1200px;max-width:420px;width:100%}
-.portrait__card{position:relative;aspect-ratio:4/5;transform-style:preserve-3d;transition:transform .9s var(--ease)}
-.portrait:hover .portrait__card,.portrait:focus-visible .portrait__card,.portrait.flip .portrait__card{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);border:2px solid var(--line);border-radius:14px;box-shadow:6px 6px 0 0 var(--line);overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.face--back{transform:rotateY(180deg)}
-.face__art{flex:1;display:grid;place-items:center;position:relative;background:var(--accent);color:#161616;overflow:hidden}
-.face--back .face__art{background:var(--bg);color:var(--ink)}
-.face__art::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(22,22,22,.12) 2px,transparent 2px),linear-gradient(90deg,rgba(22,22,22,.12) 2px,transparent 2px);background-size:44px 44px}
-.face--back .face__art::before{background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px)}
-.face__art strong{position:relative;font-size:clamp(96px,14vw,168px);line-height:1;font-weight:700;letter-spacing:-.06em}
-.face__art svg{position:relative;width:62%;height:auto}
-.face__cap{padding:11px 16px;text-align:center;font-weight:700;letter-spacing:-.01em;color:#161616;background:var(--accent);border-top:2px solid var(--line)}
 .lede{font-size:clamp(22px,2.6vw,30px);line-height:1.35;font-weight:500;letter-spacing:-.02em}
 .notes{display:grid;gap:18px;margin-top:28px}
 .notes p{color:var(--muted);max-width:62ch}
@@ -199,6 +187,30 @@ section{position:relative}
 .foot{padding:32px 0;font-size:15px;color:var(--subtle);background:var(--closer);border-top:1.5px solid var(--faint)}
 .foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px}
 
+
+.about .lede{max-width:30ch}
+.about__intro{color:var(--muted);max-width:62ch;margin-top:20px;font-size:18px}
+.about__cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:44px;padding-top:28px;border-top:2px solid var(--faint)}
+.about__cols h3{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);margin-bottom:10px}
+.about__cols p{color:var(--muted)}
+.shot{position:relative}
+.shot video,.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:8px;background:var(--bg)}
+.shot__fallback{display:none;position:absolute;inset:14px;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:8px;background:var(--accent);color:#161616;text-align:center}
+.shot__fallback b{font-size:clamp(28px,4vw,44px);letter-spacing:-.03em;line-height:1}
+.shot__fallback span{font-size:14px;font-weight:500}
+.shot.missing img{display:none}
+.shot.missing .shot__fallback{display:flex}
+.case__go{display:inline-flex;margin-top:22px;width:fit-content}
+.prod{padding:99px 0;background:var(--surface);border-block:2px solid var(--line)}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
+.metrics li{display:flex;flex-direction:column;gap:6px;padding:22px 20px;background:var(--bg);border:2px solid var(--line);border-radius:14px;box-shadow:4px 4px 0 0 var(--line)}
+.metrics small{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--subtle);min-height:2.6em}
+.metrics b{white-space:nowrap;font-size:clamp(30px,3.1vw,42px);line-height:1;font-weight:700;letter-spacing:-.03em}
+.metrics span{color:var(--muted);font-size:15px;line-height:1.45}
+.creds{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media (max-width:980px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.about__cols{grid-template-columns:1fr;gap:24px}.creds{grid-template-columns:1fr!important}}
+@media (max-width:760px){.prod{padding-block:64px}.metrics{grid-template-columns:1fr}}
+
 /* reveal */
 .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .js .reveal.in{opacity:1;transform:none}
@@ -256,7 +268,7 @@ section{position:relative}
   <section class="hero">
     <div class="hero__grid" aria-hidden="true"><div class="hero__lines"></div><div class="hero__glow"></div></div>
     <div class="wrap">
-      <p class="eyebrow">Gandhinagar, India</p>
+      <p class="eyebrow">Ahmedabad, India</p>
       <h1 class="name" aria-label="Khushali Pariyal">
         <span><i>Khushali</i></span>
         <span><i>Pariyal</i></span>
@@ -289,29 +301,12 @@ section{position:relative}
         <p class="eyebrow">About</p>
         <h2 class="title">Hi there!</h2>
       </div>
-      <div class="about__grid">
-        <div class="portrait reveal" tabindex="0" aria-label="Portrait card, flips on hover or focus">
-          <div class="portrait__card">
-            <div class="face">
-              <div class="face__art"><strong aria-hidden="true">KP</strong></div>
-              <p class="face__cap">Khushali Pariyal</p>
-            </div>
-            <div class="face face--back">
-              <div class="face__art">
-                <svg viewBox="0 0 160 160" aria-hidden="true"><rect class="s-box" x="14" y="14" width="132" height="132" rx="14"/><path class="s-line" d="M38 58h30M38 80h52M38 102h40"/><rect class="s-yel" x="96" y="46" width="34" height="34" rx="6"/><path class="s-line" d="M104 63l6 6 10-12"/><circle class="s-ink" cx="122" cy="108" r="6"/></svg>
-              </div>
-              <p class="face__cap">the LLM never does the maths</p>
-            </div>
-          </div>
-        </div>
-        <div>
-          <p class="lede reveal">I build agentic AI and RAG systems, from multi-agent workflows to vision models, and I care most about the ones that actually get deployed.</p>
-          <div class="notes reveal">
-            <p>AI Engineer at TCS in Gandhinagar, working on agentic systems on AWS Bedrock, multimodal RAG pipelines and computer vision for railway inspection.</p>
-            <p>B.E. in Computer Engineering from Government Engineering College Gandhinagar, after a diploma in Information Technology at Government Polytechnic for Girls, Ahmedabad.</p>
-            <p>Outside work I build Meadow, Casora and SplitMate: a supervised coding agent, a real estate decision platform and a bill splitter where the LLM never touches the arithmetic.</p>
-          </div>
-        </div>
+      <p class="lede reveal">I'm an AI Engineer who likes building things that are a little more ambitious than a chatbot.</p>
+      <p class="about__intro reveal">I've spent the last 2+ years building agentic AI, RAG, multimodal systems, computer vision and AI products, from production systems at TCS to products I build independently.</p>
+      <div class="about__cols">
+        <div class="reveal"><h3>Currently</h3><p>AI Engineer at TCS, Ahmedabad, building production systems with AWS Bedrock, AgentCore, RAG, multimodal AI and computer vision.</p></div>
+        <div class="reveal"><h3>Outside work</h3><p>I build Meadow, Casora, SplitMate and other AI products, usually starting with a problem and ending with something people can actually use.</p></div>
+        <div class="reveal"><h3>Based in</h3><p>Ahmedabad, India.</p></div>
       </div>
     </div>
   </section>
@@ -343,7 +338,7 @@ section{position:relative}
 
       <div class="xp__detail">
         <article class="job reveal" id="job-tcs">
-          <p class="job__when"><b>Aug 2024 – present</b>Gandhinagar, Gujarat</p>
+          <p class="job__when"><b>Aug 2024 – present</b>Ahmedabad, India</p>
           <h3>AI Engineer (Systems Engineer), TCS</h3>
           <p class="job__lede">Shipping agentic, generative and computer vision systems for production teams.</p>
           <ul class="points">
@@ -392,114 +387,89 @@ section{position:relative}
     <div class="wrap">
       <div class="head reveal">
         <p class="eyebrow">Selected work</p>
-        <h2 class="title">Three things worth opening</h2>
-        <p>Side projects built end to end, each with a clear problem and a system behind it.</p>
+        <h2 class="title">Four things worth opening</h2>
+        <p>A few things I've actually shipped.</p>
       </div>
       <div class="cases">
-
         <article class="case reveal" id="meadow">
-          <div class="shot" role="img" aria-label="Diagram of Meadow: a plan is split into phases, each on its own git branch, with approval over Telegram">
-            <svg viewBox="0 0 480 300" aria-hidden="true">
-              <rect class="s-box" x="20" y="24" width="96" height="44" rx="8"/><text class="s-txt" x="68" y="51" text-anchor="middle">PLAN.md</text>
-              <path class="s-line" d="M116 46h30"/><path class="s-line" d="M140 40l6 6-6 6"/>
-              <rect class="s-box" x="150" y="24" width="150" height="44" rx="8"/><text class="s-txt" x="225" y="51" text-anchor="middle">spec + phased plan</text>
-              <g>
-                <rect class="s-yel" x="150" y="100" width="150" height="40" rx="8"/><text class="s-btxt" x="225" y="125" text-anchor="middle">phase 1 · branch</text>
-                <rect class="s-box" x="150" y="152" width="150" height="40" rx="8"/><text class="s-txt" x="225" y="177" text-anchor="middle">phase 2 · branch</text>
-                <rect class="s-box" x="150" y="204" width="150" height="40" rx="8"/><text class="s-txt" x="225" y="229" text-anchor="middle">phase 3 · branch</text>
-              </g>
-              <path class="s-line" d="M225 68v32M225 140v12M225 192v12"/>
-              <path class="s-line" d="M300 120h30M300 172h30M300 224h30"/>
-              <rect class="s-box" x="334" y="100" width="130" height="144" rx="12"/>
-              <text class="s-sub" x="349" y="124">Telegram</text>
-              <rect class="s-box" x="346" y="134" width="106" height="44" rx="8"/><text class="s-txt" x="358" y="152">Approve</text><text class="s-txt" x="358" y="168">phase 2?</text>
-              <rect class="s-yel" x="346" y="192" width="106" height="34" rx="17"/><text class="s-btxt" x="399" y="214" text-anchor="middle">Approve</text>
-              <circle class="s-yel" cx="104" cy="170" r="9"/><path class="s-line" d="M60 170h35M113 170h30"/>
-              <text class="s-sub" x="20" y="205">tests pass → merge</text>
-              <text class="s-sub" x="20" y="222">fail → 3 fix attempts</text>
-            </svg>
-          </div>
+          <a class="shot" href="https://github.com/khushali6/Meadow" target="_blank" rel="noopener" aria-label="Meadow, supervised agentic coding system. Open the GitHub repository">
+            <video id="meadowvid" src="assets/meadow.mp4" poster="assets/meadow-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+          </a>
           <div>
             <p class="case__no">Agentic AI · open source</p>
             <h3>Meadow</h3>
-            <p class="case__tag">A supervised coding agent that ships tested code</p>
-            <p class="case__lede">Turns a request into a spec and phased plan, then drives a coding engine phase by phase once a human approves.</p>
-            <ul class="case__list">
-              <li>Each phase runs on its own <strong>git branch</strong> with guard checks and tests. Failures go back with the real error for up to 3 fixes, and only passing work merges.</li>
-              <li>A <strong>supervisor agent</strong> (Ollama, FreeLLMAPI or Claude) reviews failures, reports over Telegram and runs independent phases in parallel.</li>
-              <li><strong>MCP tools</strong> sit behind approval gates and audit logs, with a CodeAtlas knowledge graph for cited answers.</li>
-            </ul>
-            <div class="chips"><span class="chip">TypeScript</span><span class="chip">MCP</span><span class="chip">Tool calling</span><span class="chip">Ollama</span></div>
+            <p class="case__tag">Agentic coding system</p>
+            <p class="case__lede">Turns a request into a planned, tested and reviewable coding workflow.</p>
+            <ul class="case__list"><li>Each phase runs on its own <strong>git branch</strong> with guard checks and tests. Failures go back with the real error for up to 3 fixes, and only passing work merges.</li><li>A <strong>supervisor agent</strong> (Ollama, FreeLLMAPI or Claude) reviews failures, reports over Telegram and runs independent phases in parallel.</li><li><strong>MCP tools</strong> sit behind approval gates and audit logs, with a CodeAtlas knowledge graph for cited answers.</li></ul>
+            <div class="chips"><span class="chip">TypeScript</span><span class="chip">MCP</span><span class="chip">Tool Calling</span><span class="chip">Agent Harness</span></div>
+            <a class="pill case__go" href="https://github.com/khushali6/Meadow" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a>
           </div>
         </article>
 
         <article class="case reveal" id="casora">
-          <div class="shot" role="img" aria-label="Illustration of Casora: a neighbourhood price trend chart beside a home with an explainable recommendation">
-            <svg viewBox="0 0 480 300" aria-hidden="true">
-              <rect class="s-box" x="20" y="24" width="270" height="200" rx="10"/>
-              <text class="s-sub" x="36" y="48">neighbourhood price trend</text>
-              <path class="s-line" d="M40 190h230M40 190V64" style="opacity:.35"/>
-              <polyline class="s-line" points="44,170 84,156 124,162 164,128 204,114 244,84" style="stroke-width:3"/>
-              <g><circle class="s-yel" cx="164" cy="128" r="7"/><circle class="s-yel" cx="244" cy="84" r="7"/><circle class="s-box" cx="84" cy="156" r="5"/><circle class="s-box" cx="204" cy="114" r="5"/></g>
-              <text class="s-sub" x="36" y="212">comparable listings</text>
-              <rect class="s-box" x="310" y="24" width="150" height="130" rx="10"/>
-              <path class="s-yel" d="M335 100l50-38 50 38v40h-100z"/><rect class="s-box" x="376" y="112" width="18" height="28"/>
-              <rect class="s-yel" x="310" y="170" width="150" height="54" rx="10"/>
-              <text class="s-btxt" x="385" y="194" text-anchor="middle">Why this home</text>
-              <text class="s-btxt" x="385" y="212" text-anchor="middle" style="font-weight:500">explained</text>
-              <rect class="s-box" x="20" y="244" width="440" height="40" rx="20"/>
-              <text class="s-sub" x="40" y="269">“Which area gives the best value for a 2BHK?”</text>
-              <circle class="s-yel" cx="436" cy="264" r="11"/>
-            </svg>
-          </div>
+          <a class="shot" href="https://casora-nine.vercel.app/" target="_blank" rel="noopener" aria-label="Casora, AI real estate decision product">
+            <img src="assets/casora.png" alt="Casora, AI real estate decision product" loading="lazy" onerror="this.parentNode.classList.add('missing')">
+            <span class="shot__fallback" aria-hidden="true"><b>Casora</b><span>Open the live product ↗</span></span>
+          </a>
           <div>
-            <p class="case__no">AI decision intelligence · full-stack</p>
+            <p class="case__no">AI decision intelligence</p>
             <h3>Casora</h3>
-            <p class="case__tag">Data-backed home discovery across India</p>
-            <p class="case__lede">Search, compare and understand homes using verified listings and neighbourhood-level price intelligence, instead of broker-driven discovery.</p>
-            <ul class="case__list">
-              <li>An <strong>investment decision layer</strong> turns price trends, comparable listings and predictive analytics into explainable buy and invest recommendations through scoring and ranking models.</li>
-              <li>LLMs, <strong>semantic search</strong> and prompt engineering power grounded conversational discovery.</li>
-            </ul>
-            <div class="chips"><span class="chip">LLM</span><span class="chip">Semantic search</span><span class="chip">Predictive analytics</span><span class="chip">Full-stack</span></div>
+            <p class="case__tag">Search, compare and understand homes</p>
+            <p class="case__lede">Search, compare and understand homes using verified information and locality-level intelligence.</p>
+            <ul class="case__list"><li>An <strong>investment decision layer</strong> turns price trends, comparable listings and predictive analytics into explainable buy and invest recommendations.</li><li>LLMs, <strong>semantic search</strong> and prompt engineering power grounded conversational discovery.</li></ul>
+            <div class="chips"><span class="chip">RAG</span><span class="chip">Semantic Search</span><span class="chip">Decision Intelligence</span><span class="chip">LLM</span></div>
+            <a class="pill case__go" href="https://casora-nine.vercel.app/" target="_blank" rel="noopener">Open Casora <span aria-hidden="true">↗</span></a>
           </div>
         </article>
 
         <article class="case reveal" id="splitmate">
-          <div class="shot" role="img" aria-label="Illustration of SplitMate: a receipt is read by OCR, then a deterministic engine settles who pays whom">
-            <svg viewBox="0 0 480 300" aria-hidden="true">
-              <path class="s-box" d="M40 24h130v236l-13-10-13 10-13-10-13 10-13-10-13 10-13-10-13 10-13-10-12 10z"/>
-              <path class="s-line" d="M58 58h94M58 82h94M58 106h94M58 130h60" style="opacity:.55"/>
-              <path class="s-line" d="M58 168h94M58 192h70"/>
-              <rect class="s-yel" x="96" y="204" width="56" height="22" rx="4"/><text class="s-btxt" x="124" y="220" text-anchor="middle" style="font-size:11px">total</text>
-              <path class="s-line" d="M186 140h46"/><path class="s-line" d="M224 132l8 8-8 8"/>
-              <rect class="s-yel" x="240" y="104" width="100" height="72" rx="10"/>
-              <text class="s-btxt" x="290" y="132" text-anchor="middle">OCR + VLM</text>
-              <text class="s-btxt" x="290" y="152" text-anchor="middle" style="font-weight:500;font-size:11px">items, tax, fees</text>
-              <path class="s-line" d="M340 140h26"/><path class="s-line" d="M358 132l8 8-8 8"/>
-              <circle class="s-box" cx="410" cy="70" r="22"/><text class="s-txt" x="410" y="75" text-anchor="middle">A</text>
-              <circle class="s-box" cx="440" cy="170" r="22"/><text class="s-txt" x="440" y="175" text-anchor="middle">B</text>
-              <circle class="s-yel" cx="396" cy="236" r="22"/><text class="s-btxt" x="396" y="241" text-anchor="middle">C</text>
-              <path class="s-line" d="M416 94l20 52M430 192l-24 26M390 214l-4-122" style="stroke-dasharray:4 5"/>
-              <rect class="s-box" x="186" y="214" width="150" height="46" rx="10"/>
-              <text class="s-txt" x="261" y="234" text-anchor="middle">math engine</text><text class="s-sub" x="261" y="250" text-anchor="middle">no LLM arithmetic</text>
-            </svg>
-          </div>
+          <a class="shot" href="https://splitmate-two-iota.vercel.app/" target="_blank" rel="noopener" aria-label="SplitMate, receipt splitting product">
+            <img src="assets/splitmate.png" alt="SplitMate, receipt splitting product" loading="lazy" onerror="this.parentNode.classList.add('missing')">
+            <span class="shot__fallback" aria-hidden="true"><b>SplitMate</b><span>Open the live product ↗</span></span>
+          </a>
           <div>
-            <p class="case__no">VLM · OCR · full-stack</p>
+            <p class="case__no">Multimodal expense splitting</p>
             <h3>SplitMate</h3>
-            <p class="case__tag">Bill splitting that gets the numbers right</p>
-            <p class="case__lede">Reads receipt images and PDFs, pulls out the line items, and settles the group with the fewest payments.</p>
-            <ul class="case__list">
-              <li><strong>OCR and vision-language models</strong> extract items, quantities, taxes and service charges into structured data, with a human-in-the-loop review step.</li>
-              <li>A <strong>deterministic math engine</strong> handles totals, proportional tax and rounding, so the LLM never does arithmetic. A debt-graph algorithm minimizes settlements.</li>
-              <li>Bring your own AI: configurable LLM endpoints, with <strong>Gemini</strong> supported.</li>
-            </ul>
-            <div class="chips"><span class="chip">Gemini API</span><span class="chip">OCR</span><span class="chip">VLM</span><span class="chip">Full-stack</span></div>
+            <p class="case__tag">Receipts in, settlements out</p>
+            <p class="case__lede">Understands receipts, extracts structured expenses and calculates the smallest set of settlements.</p>
+            <ul class="case__list"><li><strong>OCR and vision-language models</strong> extract items, quantities, taxes and service charges, with a human-in-the-loop review step.</li><li>A <strong>deterministic math engine</strong> handles totals, tax and rounding, so the LLM never does arithmetic.</li></ul>
+            <div class="chips"><span class="chip">VLM</span><span class="chip">OCR</span><span class="chip">Gemini</span><span class="chip">Deterministic Systems</span></div>
+            <a class="pill case__go" href="https://splitmate-two-iota.vercel.app/" target="_blank" rel="noopener">Open SplitMate <span aria-hidden="true">↗</span></a>
           </div>
         </article>
 
+        <article class="case reveal" id="laya">
+          <a class="shot" href="https://layameme.vercel.app/" target="_blank" rel="noopener" aria-label="Laya, semantic meme search">
+            <img src="assets/laya.png" alt="Laya, semantic meme search" loading="lazy" onerror="this.parentNode.classList.add('missing')">
+            <span class="shot__fallback" aria-hidden="true"><b>Laya</b><span>Open the live product ↗</span></span>
+          </a>
+          <div>
+            <p class="case__no">Creative AI experiment</p>
+            <h3>Laya</h3>
+            <p class="case__tag">Meme search by emotional intent</p>
+            <p class="case__lede">Semantic meme search based on emotional intent rather than template names.</p>
+            
+            <div class="chips"><span class="chip">LLM</span><span class="chip">Semantic Search</span><span class="chip">Ranking</span><span class="chip">AI</span></div>
+            <a class="pill case__go" href="https://layameme.vercel.app/" target="_blank" rel="noopener">Open Laya <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
       </div>
+    </div>
+  </section>
+
+  <section class="prod" id="production">
+    <div class="wrap">
+      <div class="head reveal">
+        <p class="eyebrow">Production AI at TCS</p>
+        <h2 class="title">Numbers from systems in use</h2>
+      </div>
+      <ul class="metrics">
+        <li class="reveal"><small>Requirements to software</small><b>75%</b><span>faster feature turnaround</span></li>
+        <li class="reveal"><small>ADAS test generation</small><b>70%</b><span>less manual test creation</span></li>
+        <li class="reveal"><small>ADAS test generation</small><b>2×</b><span>test coverage</span></li>
+        <li class="reveal"><small>AI code review</small><b>80%</b><span>less manual review effort</span></li>
+        <li class="reveal"><small>Computer vision inspection</small><b>18–22%</b><span>precision and recall improvement</span></li>
+      </ul>
     </div>
   </section>
 
@@ -507,7 +477,7 @@ section{position:relative}
     <div class="wrap">
       <div class="head reveal">
         <p class="eyebrow">The rest of it</p>
-        <h2 class="title">Education, focus, impact</h2>
+        <h2 class="title">Education and focus</h2>
       </div>
       <div class="creds">
         <div class="cred reveal">
@@ -523,14 +493,6 @@ section{position:relative}
             <li><b class="u">Agentic AI</b><span>LangGraph, MCP, supervisor agents</span></li>
             <li><b class="u">Generative AI and RAG</b><span>Multimodal retrieval, guardrails, evaluation</span></li>
             <li><b class="u">LLMOps and decision intelligence</b><span>CI/CD, explainable scoring and ranking</span></li>
-          </ul>
-        </div>
-        <div class="cred reveal">
-          <h3>Impact</h3>
-          <ul>
-            <li><b>75%</b><span>faster feature time-to-market with an agentic delivery system</span></li>
-            <li><b>70%</b><span>less manual test creation with a multimodal RAG pipeline</span></li>
-            <li><b>80%</b><span>less manual code review through LLM tooling in CI/CD</span></li>
           </ul>
         </div>
       </div>
@@ -555,7 +517,7 @@ section{position:relative}
 <a class="totop" id="totop" href="#top" aria-label="Back to top"><span aria-hidden="true">↑</span></a>
 <footer class="foot">
   <div class="wrap">
-    <span>Khushali Pariyal · Gandhinagar, India</span>
+    <span>Khushali Pariyal · Ahmedabad, India</span>
     <span>Thanks for scrolling all the way down :)</span>
   </div>
 </footer>
@@ -588,12 +550,12 @@ section{position:relative}
 
   /* skills */
   var skills=[
-    ['Agentic AI',['LangGraph','LangChain','Multi-agent systems','Tool calling','MCP','Human-in-the-loop','Agent orchestration']],
-    ['GenAI & RAG',['LLMs','RAG pipelines','Prompt engineering','Vector embeddings','Semantic search','Knowledge graphs','VLMs','OCR','Guardrails']],
-    ['ML & Vision',['PyTorch','YOLO','CNN','DeepLabV3','PatchCore','Stable Diffusion']],
-    ['Cloud & MLOps',['AWS Bedrock','AgentCore','Textract','OpenSearch','FAISS','Lambda','EventBridge','Azure','Ollama','Docker','GitLab CI/CD','GitHub Actions','Kafka']],
-    ['Languages',['Python','TypeScript','JavaScript','Java','C','C++','SQL']],
-    ['Frameworks & data',['Node.js','Django','Spring Boot','React','MySQL','MongoDB','PostgreSQL','Redis','REST APIs']]
+    ['Agentic AI',['LangGraph','LangChain','Multi-Agent Systems','Agent Harness Engineering','Context Engineering','Agent Memory','Tool Calling','Tool Routing','MCP','Agent Orchestration','Human-in-the-Loop','Approval Gates']],
+    ['RAG & Retrieval',['Advanced RAG','Hybrid Retrieval','Semantic Search','Vector Search','BM25','Reranking','Cross-Encoder','Query Rewriting','Semantic Chunking','Metadata Filtering','Graph RAG','Knowledge Graphs','Multimodal RAG']],
+    ['LLMOps & Evaluation',['LLMOps','LLM Evaluation','RAG Evaluation','Agent Evaluation','LLM-as-a-Judge','Structured Outputs','Guardrails','Hallucination Mitigation','AI Observability','Model Routing']],
+    ['Multimodal AI',['VLMs','Multimodal AI','Document Intelligence','Document Understanding','OCR','Computer Vision','PyTorch','YOLO','DeepLabV3','PatchCore']],
+    ['Backend & Data',['Python','FastAPI','TypeScript','JavaScript','SQL','PostgreSQL','Supabase','Redis','REST APIs','Webhooks','Docker']],
+    ['Cloud',['AWS Bedrock','AgentCore','OpenSearch','Textract','Lambda','EventBridge','FAISS','Azure','Ollama']]
   ];
   var grid=document.getElementById('skillgrid');
   skills.forEach(function(g){
@@ -631,10 +593,10 @@ section{position:relative}
     jobs.forEach(function(j){spy.observe(j);});
   }
 
-  /* portrait flip on tap */
-  var p=document.querySelector('.portrait');
-  p.addEventListener('click',function(){p.classList.toggle('flip');});
-  p.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();p.classList.toggle('flip');}});
+
+  /* meadow demo: respect reduced motion */
+  var mv=document.getElementById('meadowvid');
+  if(mv&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){mv.removeAttribute('autoplay');mv.pause();}
 
   /* back to top */
   var top=document.getElementById('totop');
