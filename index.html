@@ -194,6 +194,11 @@ section{position:relative}
 .about__cols h3{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);margin-bottom:10px}
 .about__cols p{color:var(--muted)}
 .shot{position:relative}
+.shot--brag video{object-position:center}
+.case__links{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:22px}
+.case__links .case__go{margin-top:0}
+.case__alt{font-size:14px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.case__alt:hover{color:var(--ink)}
 .shot video,.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:8px;background:var(--bg)}
 .shot__fallback{display:none;position:absolute;inset:14px;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:8px;background:var(--accent);color:#161616;text-align:center}
 .shot__fallback b{font-size:clamp(28px,4vw,44px);letter-spacing:-.03em;line-height:1}
@@ -387,7 +392,7 @@ section{position:relative}
     <div class="wrap">
       <div class="head reveal">
         <p class="eyebrow">Selected work</p>
-        <h2 class="title">Four things worth opening</h2>
+        <h2 class="title">Seven things worth opening</h2>
         <p>A few things I've actually shipped.</p>
       </div>
       <div class="cases">
@@ -408,8 +413,7 @@ section{position:relative}
 
         <article class="case reveal" id="casora">
           <a class="shot" href="https://casora-nine.vercel.app/" target="_blank" rel="noopener" aria-label="Casora, AI real estate decision product">
-            <img src="assets/casora.png" alt="Casora, AI real estate decision product" loading="lazy" onerror="this.parentNode.classList.add('missing')">
-            <span class="shot__fallback" aria-hidden="true"><b>Casora</b><span>Open the live product ↗</span></span>
+            <video class="vid" src="assets/video/casora.mp4" poster="assets/video/casora-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
           </a>
           <div>
             <p class="case__no">AI decision intelligence</p>
@@ -451,6 +455,51 @@ section{position:relative}
             
             <div class="chips"><span class="chip">LLM</span><span class="chip">Semantic Search</span><span class="chip">Ranking</span><span class="chip">AI</span></div>
             <a class="pill case__go" href="https://layameme.vercel.app/" target="_blank" rel="noopener">Open Laya <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="case reveal" id="intentroute">
+          <a class="shot shot--brag" href="https://github.com/khushali6/Intentroute" target="_blank" rel="noopener" aria-label="IntentRoute, Fuzzy intent to structured orders. Open the GitHub repository">
+            <video class="vid" src="assets/video/intentroute.mp4" poster="assets/video/intentroute-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+          </a>
+          <div>
+            <p class="case__no">Agentic AI · LangGraph</p>
+            <h3>IntentRoute</h3>
+            <p class="case__tag">Fuzzy intent to structured orders</p>
+            <p class="case__lede">Turns a vague request like "I feel bloated" into hard nutritional limits and a verified order.</p>
+            <ul class="case__list"><li>A <strong>LangGraph state machine</strong> parses intent, enriches context, searches the catalog, maps constraints and verifies every limit.</li><li>Real data from <strong>TheMealDB</strong> and <strong>USDA FoodData Central</strong> via MCP tools, with structured Pydantic schemas.</li><li>If nothing matches, it <strong>broadens its keywords and retries</strong> on its own.</li></ul>
+            <div class="chips"><span class="chip">LangGraph</span><span class="chip">MCP</span><span class="chip">FastAPI</span><span class="chip">React</span></div>
+            <div class="case__links"><a class="pill case__go" href="https://github.com/khushali6/Intentroute" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a><a class="case__alt" href="assets/gif/intentroute.gif" target="_blank" rel="noopener">GIF</a><a class="case__alt" href="assets/brag/intentroute-brag.mp4" target="_blank" rel="noopener">Launch video (with sound)</a></div>
+          </div>
+        </article>
+
+        <article class="case reveal" id="zeitlite">
+          <a class="shot shot--brag" href="https://github.com/khushali6/zeit-lite" target="_blank" rel="noopener" aria-label="zeit-lite, Talk to your database. Open the GitHub repository">
+            <video class="vid" src="assets/video/zeit-lite.mp4" poster="assets/video/zeit-lite-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+          </a>
+          <div>
+            <p class="case__no">Text-to-SQL · Next.js</p>
+            <h3>zeit-lite</h3>
+            <p class="case__tag">Talk to your database</p>
+            <p class="case__lede">Ask a question in plain English and get an answer backed by a real SQL query.</p>
+            <ul class="case__list"><li>The schema is read <strong>dynamically</strong> from SQLite and passed to a Llama 3.3 70B model to write the query.</li><li>A <strong>self-correcting loop</strong> feeds execution errors back to the model for up to 2 retries.</li><li>Latency and token cost are tracked per query.</li></ul>
+            <div class="chips"><span class="chip">Next.js</span><span class="chip">SQLite</span><span class="chip">Groq</span><span class="chip">Text-to-SQL</span></div>
+            <div class="case__links"><a class="pill case__go" href="https://github.com/khushali6/zeit-lite" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a><a class="case__alt" href="assets/gif/zeit-lite.gif" target="_blank" rel="noopener">GIF</a><a class="case__alt" href="assets/brag/zeit-lite-brag.mp4" target="_blank" rel="noopener">Launch video (with sound)</a></div>
+          </div>
+        </article>
+
+        <article class="case reveal" id="cofoundry">
+          <a class="shot shot--brag" href="https://github.com/khushali6/CoFoundry" target="_blank" rel="noopener" aria-label="CoFoundry, Startup discovery and hiring radar. Open the GitHub repository">
+            <video class="vid" src="assets/video/cofoundry.mp4" poster="assets/video/cofoundry-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+          </a>
+          <div>
+            <p class="case__no">Web agents · Search</p>
+            <h3>CoFoundry</h3>
+            <p class="case__tag">Startup discovery and hiring radar</p>
+            <p class="case__lede">Finds new startups, their tech stack, open roles and founders, then makes them searchable by meaning.</p>
+            <ul class="case__list"><li><strong>TinyFish web agents</strong> scrape Product Hunt, Y Combinator and Crunchbase, then visit each site for stack, jobs and team.</li><li>Results are stored with <strong>MiniLM embeddings</strong> for natural-language vector search, plus a graph view.</li><li>Generates personalised outreach messages per person.</li></ul>
+            <div class="chips"><span class="chip">TinyFish</span><span class="chip">Vector Search</span><span class="chip">React</span><span class="chip">Express</span></div>
+            <div class="case__links"><a class="pill case__go" href="https://github.com/khushali6/CoFoundry" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a><a class="case__alt" href="assets/gif/cofoundry.gif" target="_blank" rel="noopener">GIF</a><a class="case__alt" href="assets/brag/cofoundry-brag.mp4" target="_blank" rel="noopener">Launch video (with sound)</a></div>
           </div>
         </article>
       </div>
@@ -595,8 +644,7 @@ section{position:relative}
 
 
   /* meadow demo: respect reduced motion */
-  var mv=document.getElementById('meadowvid');
-  if(mv&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){mv.removeAttribute('autoplay');mv.pause();}
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.shot video').forEach(function(v){v.removeAttribute('autoplay');v.pause();});}
 
   /* back to top */
   var top=document.getElementById('totop');
