@@ -98,7 +98,9 @@ h2.title{font-size:clamp(28px,3.4vw,36px);line-height:1.05;font-weight:700;lette
 .stats span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle)}
 
 /* hero avatar */
-.avatar{position:absolute;top:44px;right:calc(clamp(20px,3vw,48px) - max(0px,(100vw - 1180px)/2));width:clamp(190px,19vw,300px);aspect-ratio:9/16;margin:0;overflow:hidden;background:var(--surface);border:2px solid var(--line);border-radius:22px;box-shadow:6px 6px 0 0 var(--line);animation:avatar-in .9s var(--ease) .25s both}
+.hero .wrap{width:100%;max-width:none}
+.avatar{position:absolute;top:0;right:clamp(20px,3vw,48px);width:min(clamp(190px,max(19vw,calc(100vw - clamp(20px,3vw,48px) - var(--pad) - 882px)),520px),calc((100svh - 190px)*9/16));aspect-ratio:9/16;margin:0;overflow:hidden;background:var(--surface);border:2px solid var(--line);border-radius:26px;box-shadow:8px 8px 0 0 var(--line);animation:avatar-in .9s var(--ease) .25s both}
+@media (min-width:1250px){.avatar{top:50%;transform:translateY(-50%)}}
 .avatar video{display:block;width:100%;height:100%;object-fit:cover}
 .avatar__sound{position:absolute;right:10px;bottom:10px;display:grid;place-items:center;width:38px;height:38px;color:#161616;background:var(--accent);border:2px solid var(--line);border-radius:50%;transition:transform .18s var(--ease),box-shadow .18s var(--ease)}
 .avatar__sound:hover{box-shadow:2px 2px 0 0 var(--line);transform:translate(-1px,-1px)}
@@ -107,7 +109,7 @@ h2.title{font-size:clamp(28px,3.4vw,36px);line-height:1.05;font-weight:700;lette
 .avatar__sound[aria-pressed="true"] .on{display:block}
 .avatar__sound[aria-pressed="true"] .off{display:none}
 @keyframes avatar-in{from{opacity:0}to{opacity:1}}
-@media (max-width:980px){.avatar{position:relative;top:auto;right:auto;width:min(240px,64%);margin:44px 0 0 auto}}
+@media (max-width:980px){.avatar{position:relative;top:auto;right:auto;width:min(300px,80%);margin:44px 0 0 auto}}
 
 /* sections */
 section{position:relative}
@@ -141,6 +143,7 @@ section{position:relative}
 .job__when{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:14px;color:var(--subtle);margin-bottom:10px}
 .job__when b{font-size:15px;font-weight:500;color:var(--ink)}
 .job__when b::after{content:" ·";color:var(--subtle);font-weight:400}
+.job__when b:last-child::after{content:none}
 .job h3{font-size:24px;line-height:1.15;font-weight:700;letter-spacing:-.02em}
 .job__lede{color:var(--muted);max-width:62ch;margin-top:10px}
 .points{display:grid;gap:10px;margin-top:16px}
@@ -204,7 +207,7 @@ section{position:relative}
 
 .about .lede{max-width:30ch}
 .about__intro{color:var(--muted);max-width:62ch;margin-top:20px;font-size:18px}
-.about__cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:44px;padding-top:28px;border-top:2px solid var(--faint)}
+.about__cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:44px;padding-top:28px;border-top:2px solid var(--faint)}
 .about__cols h3{font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--subtle);margin-bottom:10px}
 .about__cols p{color:var(--muted)}
 .shot{position:relative}
@@ -283,7 +286,6 @@ section{position:relative}
   <section class="hero">
     <div class="hero__grid" aria-hidden="true"><div class="hero__lines"></div><div class="hero__glow"></div></div>
     <div class="wrap">
-      <p class="eyebrow">Ahmedabad, India</p>
       <h1 class="name" aria-label="Khushali Pariyal">
         <span><i>Khushali</i></span>
         <span><i>Pariyal</i></span>
@@ -327,9 +329,8 @@ section{position:relative}
       <p class="lede reveal">I'm an AI Engineer who likes building things that are a little more ambitious than a chatbot.</p>
       <p class="about__intro reveal">I've spent the last 2+ years building agentic AI, RAG, multimodal systems, computer vision and AI products, from production systems at TCS to products I build independently.</p>
       <div class="about__cols">
-        <div class="reveal"><h3>Currently</h3><p>AI Engineer at TCS, Ahmedabad, building production systems with AWS Bedrock, AgentCore, RAG, multimodal AI and computer vision.</p></div>
+        <div class="reveal"><h3>Currently</h3><p>AI Engineer at TCS, building production systems with AWS Bedrock, AgentCore, RAG, multimodal AI and computer vision.</p></div>
         <div class="reveal"><h3>Outside work</h3><p>I build Meadow, Casora, SplitMate and other AI products, usually starting with a problem and ending with something people can actually use.</p></div>
-        <div class="reveal"><h3>Based in</h3><p>Ahmedabad, India.</p></div>
       </div>
     </div>
   </section>
@@ -361,7 +362,7 @@ section{position:relative}
 
       <div class="xp__detail">
         <article class="job reveal" id="job-tcs">
-          <p class="job__when"><b>Aug 2024 – present</b>Ahmedabad, India</p>
+          <p class="job__when"><b>Aug 2024 – present</b></p>
           <h3>AI Engineer (Systems Engineer), TCS</h3>
           <p class="job__lede">Shipping agentic, generative and computer vision systems for production teams.</p>
           <ul class="points">
@@ -549,7 +550,7 @@ section{position:relative}
           <h3>Education</h3>
           <ul>
             <li><b>B.E. Computer Engineering</b><span>Government Engineering College Gandhinagar</span><span>CGPA 8.37 · Aug 2021 – Jun 2024</span></li>
-            <li><b>Diploma in Information Technology</b><span>Government Polytechnic for Girls Ahmedabad</span><span>CGPA 9.69 · Aug 2018 – Jul 2021</span></li>
+            <li><b>Diploma in Information Technology</b><span>Government Polytechnic for Girls</span><span>CGPA 9.69 · Aug 2018 – Jul 2021</span></li>
           </ul>
         </div>
         <div class="cred reveal">
@@ -582,7 +583,7 @@ section{position:relative}
 <a class="totop" id="totop" href="#top" aria-label="Back to top"><span aria-hidden="true">↑</span></a>
 <footer class="foot">
   <div class="wrap">
-    <span>Khushali Pariyal · Ahmedabad, India</span>
+    <span>Khushali Pariyal</span>
     <span>Thanks for scrolling all the way down :)</span>
   </div>
 </footer>
@@ -662,7 +663,6 @@ section{position:relative}
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 })();
 </script>
-<script src="assets/star.js?v=1" defer></script>
 <script src="assets/splash-cursor.js?v=1" defer></script>
 <script>
 window.addEventListener('DOMContentLoaded',function(){
